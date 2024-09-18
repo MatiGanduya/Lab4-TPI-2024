@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <title>Document</title>
+    <title>@yield('title', 'My App')</title>
 </head>
     <header class="p-3 text-bg-dark">
         <div class="container">
@@ -21,6 +21,7 @@
                     <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
                     <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
                     <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    <li><a href="{{ url('/dashboard') }}" class="btn btn-outline-light me-2">Dashboard</a></li>
                 </ul>
         
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -28,20 +29,21 @@
                 </form>
         
                 <div class="text-end">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="btn btn-outline-light me-2">Dashboard</a>
-                            <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-light me-2">Logout</button>
-                            </form>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-outline-light me-2">Login</a>
-                            <a href="{{ route('register') }}" class="btn btn-warning">Sign-up</a>
-                        @endauth
-                    @endif
+                    @auth
+                        <!-- Botón de Cerrar Sesión si el usuario está autenticado -->
+                        
+                        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-light me-2">Logout</button>
+                        </form>
+                    @else
+                        <!-- Botones de Login y Sign-up si el usuario no está autenticado -->
+                        <a href="{{ route('login') }}" class="btn btn-outline-light me-2">Login</a>
+                        <a href="{{ route('register') }}" class="btn btn-warning">Sign-up</a>
+                    @endauth
                 </div>
             </div>
         </div>
     </header>
+
 </html>
