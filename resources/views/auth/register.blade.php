@@ -9,12 +9,44 @@
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+         <!-- apellido -->
+         <div class="mt-4">
+            <x-input-label for="name" :value="__('Apellido')" />
+            <x-text-input id="name" class="block mt-1 w-full" type="text" name="apellido" :value="old('name')" required autofocus autocomplete="name" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        </div>
+
+         <!-- DNI -->
+         <div class="mt-4">
+            <x-input-label for="name" :value="__('Dni')" />
+            <x-text-input id="name" class="block mt-1 w-full" type="number" name="Dni" :value="old('Dni')" required autofocus autocomplete="name" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
+
+         <!-- Pregunta "¿Eres un profesional?" -->
+         <div class="mt-4">
+            <label for="professional">¿Eres un profesional?</label>
+            <input type="checkbox" id="professional" name="professional" value="yes">
+        </div>
+
+    <!-- Campo Profesión (oculto inicialmente) -->
+    <div class="form-group" id="profession-field" style="display:none;">
+        <label for="profession">Profesión</label>
+        <x-text-input type="text" id="profession" name="profession" class="form-control"/>
+    </div>
+
+    <!-- Campo Dirección (oculto inicialmente) -->
+    <div class="form-group" id="address-field" style="display:none;">
+        <label for="address">Dirección</label>
+        <x-text-input type="text" id="address" name="address" class="form-control"/>
+    </div>
 
         <!-- Password -->
         <div class="mt-4">
@@ -49,4 +81,21 @@
             </x-primary-button>
         </div>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const professionalCheckbox = document.getElementById('professional');
+            const professionField = document.getElementById('profession-field');
+            const addressField = document.getElementById('address-field');
+
+            professionalCheckbox.addEventListener('change', function () {
+                if (professionalCheckbox.checked) {
+                    professionField.style.display = 'block';
+                    addressField.style.display = 'block';
+                } else {
+                    professionField.style.display = 'none';
+                    addressField.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </x-guest-layout>
