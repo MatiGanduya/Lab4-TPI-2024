@@ -11,9 +11,16 @@
 
          <!-- DNI -->
          <div class="mt-4">
-            <x-input-label for="name" :value="__('Dni')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="number" name="dni" :value="old('dni')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <x-input-label for="dni" :value="__('Dni')" />
+            <x-text-input id="typePhone" class="block mt-1 w-full" type="tel" name="dni" :value="old('dni')" required autofocus autocomplete="dni" />
+            <x-input-error :messages="$errors->get('dni')" class="mt-2" />
+        </div>
+
+                 <!-- NUMBER_PHONE -->
+         <div class="mt-4">
+            <x-input-label for="dni" :value="__('Telefono (opcional)')" />
+            <x-text-input id="typePhone" class="block mt-1 w-full" type="tel" name="number_phone" :value="old('number_phone')" required autofocus autocomplete="number_phone" />
+            <x-input-error :messages="$errors->get('number_phone')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
