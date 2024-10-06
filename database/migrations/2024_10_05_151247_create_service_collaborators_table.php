@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('service_collaborators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');  // FK a Services
-            $table->foreignId('user_enterprise_id')->constrained('users_enterprise')->onDelete('cascade');  // FK a users_enterprise
+            $table->foreignId('user_enterprise_id')->constrained('user_enterprises')->onDelete('cascade');  // FK a users_enterprise
             $table->unique(['service_id', 'user_enterprise_id']);  // Evitar duplicaciones
             $table->timestamps();
         });
