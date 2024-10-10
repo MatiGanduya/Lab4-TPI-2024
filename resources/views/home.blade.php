@@ -9,6 +9,7 @@
         <div class="d-grid gap-3">
             <a href="{{ Route('turnos.indexTurnos') }}" class="btn btn-primary btn-lg">Turnos</a>
             <a href="{{ Route('servicios.indexServicios') }}" class="btn btn-secondary btn-lg">Servicios</a>
+            <a href="{{ Route('empresa.indexEmpresa') }}" class="btn btn-info btn-lg">Mi Empresa</a>
         </div>
     </div>
 </div>
