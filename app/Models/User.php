@@ -46,4 +46,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+     // Relación con UserEnterprise
+     public function userEnterprise()
+     {
+         return $this->hasMany(User_enterprise::class);
+     }
+
+     // Relación con Services a través de ServiceCollaborators
+     public function services()
+     {
+         return $this->belongsToMany(Service::class, 'service_collaborators', 'user_enterprise_id', 'service_id');
+     }
 }

@@ -23,13 +23,10 @@
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                   @auth
-                   <li><a href="{{ url('/home') }}" class="btn btn-outline-light me-2">Home</a></li>
-                   @else
                    <li><a href="{{ url('/') }}" class="btn btn-outline-light me-2">Home</a></li>
-                   @endauth
-                    <li><a href="{{ Route('turnos.indexTurnos') }}" class="btn btn-outline-light me-2">Turnos</a></li>
-                    <li><a href="{{ Route('servicios.indexServicios') }}" class="btn btn-outline-light me-2">Servicios</a></li>
+                    <li><a href="{{ Route('servicios.indexServicios') }}" class="btn btn-outline-light me-2">Turnos</a></li>
+                    <li><a href="#" class="btn btn-outline-light me-2">Mi Empresa y Servicios</a></li>
+                    <li><a href="#" class="btn btn-outline-light me-2">Mi disponibilidad</a></li>
                 </ul>
 
                 <div class="text-end">

@@ -18,8 +18,10 @@ use App\Http\Controllers\EmpresaController;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('home');
 });
+
+Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios.indexServicios');
 
 Route::get('/home', function () {
     return view('home');
@@ -29,7 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios.indexServicios');
     Route::get('/turnos', [TurnosController::class, 'index'])->name('turnos.indexTurnos');
     Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.indexEmpresa');
 });
