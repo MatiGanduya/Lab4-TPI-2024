@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\TurnosController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmpresaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios.indexServicios');
     Route::get('/turnos', [TurnosController::class, 'index'])->name('turnos.indexTurnos');
+    Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.indexEmpresa');
 });
 
 require __DIR__.'/auth.php';
