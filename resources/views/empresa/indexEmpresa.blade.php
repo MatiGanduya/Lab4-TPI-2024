@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
-                    <button class="btn btn-outline-secondary btn-sm">+</button>
+                    <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">+</button>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -20,10 +20,11 @@
                         <label for="direccion" class="form-label">Dirección</label>
                         <input type="text" class="form-control" id="direccion" placeholder="Dirección" disabled>
                     </div>
-                    <!-- Espacio para un mapa -->
+                    <!-- Espacio para un mapa interactivo -->
                     <div class="mb-3">
-                        <img src="ruta-a-tu-imagen-mapa" alt="Mapa de ubicación" class="img-fluid rounded">
+                        <div id="map" style="width: 100%; height: 200px; background-color: #eaeaea;"></div>
                     </div>
+                    <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
                 </div>
             </div>
         </div>
