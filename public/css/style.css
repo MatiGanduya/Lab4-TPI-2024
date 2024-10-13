@@ -1,0 +1,126 @@
+.welcome_view {
+    position: absolute;
+    height: 1080px;
+    width: 1920px;
+    padding: 0px;
+}
+
+.header {
+    width: 1920px;
+    height: 100px; /* Reducir la altura de la barra negra */
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.rectangle1 {
+    background-color: rgba(0, 0, 0, 0.87);
+    height: 100px; /* Cambiar la altura para que coincida con .header */
+    width: 1920px;
+}
+
+.iniciarsesión {
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.4));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 30px; /* Reducir el tamaño de la fuente */
+    font-family: Inter;
+    line-height: auto;
+    border: none; /* Sin borde */
+    outline: none;
+    left: 1414px;
+    top: 30px; /* Ajustar posición para que se vea bien en la barra */
+    position: absolute;
+    width: 200px; /* Ajustar el ancho */
+    height: 40px; /* Ajustar la altura */
+}
+
+.registrarse {
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.4));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 30px; /* Reducir el tamaño de la fuente */
+    font-family: Inter;
+    line-height: auto;
+    left: 1690px;
+    top: 30px; /* Ajustar posición para que se vea bien en la barra */
+    width: 180px; /* Ajustar el ancho */
+    height: 40px; /* Ajustar la altura */
+    position: absolute;
+    border: none; /* Sin borde */
+    outline: none;
+}
+
+.todoturnos {
+    color: #ffffff;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 50px; /* Aumentar el tamaño de la fuente */
+    font-family: Inter;
+    left: 30px; /* Alinear con el margen */
+    top: 8px; /* Ajustar posición para que se vea bien en la barra */
+    width: 303px;
+    height: 40px;
+    position: absolute;
+    line-height: auto;
+    border: none; /* Sin borde */
+    outline: none;
+}
+
+.tutiempoesloquemasnosimporta {
+    color: #ffffff; /* Letras blancas */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 20px; /* Tamaño pequeño para subtítulo */
+    font-family: Inter;
+    left: 30px; /* Alinear con "Turnos" */
+    top: 60px; /* Posición justo debajo de "Turnos" */
+    width: 400px; /* Ancho para el subtítulo */
+    height: 25px;
+    position: absolute;
+    line-height: auto;
+    border: none; /* Sin borde */
+    outline: none;
+}
+
+.turnos2 {
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 30px; /* Reducir el tamaño de la fuente */
+    font-family: Inter;
+    left: 608px;
+    top: 30px; /* Ajustar posición para que se vea bien en la barra */
+    width: 100px; /* Ajustar el ancho */
+    height: 35px; /* Ajustar la altura */
+    position: absolute;
+    line-height: auto;
+    border: none; /* Sin borde */
+    outline: none;
+}
+
+.home {
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    text-align: left;
+    vertical-align: text-top;
+    font-size: 30px; /* Reducir el tamaño de la fuente */
+    font-family: Inter;
+    left: 468px;
+    top: 30px; /* Ajustar posición para que se vea bien en la barra */
+    width: 80px; /* Ajustar el ancho */
+    height: 35px; /* Ajustar la altura */
+    position: absolute;
+    line-height: auto;
+    border: none; /* Sin borde */
+    outline: none;
+}
