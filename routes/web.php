@@ -23,6 +23,8 @@ Route::get('/', function () {
 
 Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios.indexServicios');
 
+Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
+
 Route::get('/home', function () {
     return view('home');
 })->middleware(['auth', 'verified'])->name('home');

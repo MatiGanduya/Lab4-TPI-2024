@@ -12,19 +12,38 @@
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">+</button>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre de la empresa" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" placeholder="Dirección" disabled>
-                    </div>
-                    <!-- Espacio para un mapa interactivo -->
-                    <div class="mb-3">
-                        <div id="map" style="width: 100%; height: 200px; background-color: #eaeaea;"></div>
-                    </div>
-                    <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
+                    <!-- Formulario para editar y guardar la empresa -->
+                    <form action="{{ route('empresa.guardar') }}" method="POST">
+                        @csrf <!-- Token de seguridad para formularios en Laravel -->
+
+                        <!-- Nombre de la empresa -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la empresa" disabled>
+                        </div>
+
+                        <!-- Dirección de la empresa -->
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" disabled>
+                        </div>
+
+                        <!-- Mapa interactivo -->
+                        <div class="mb-3">
+                            <div id="map" style="width: 100%; height: 200px; background-color: #eaeaea;"></div>
+                        </div>
+
+                        <!-- Campos ocultos para las coordenadas -->
+                        <input type="text" id="country" name="country" placeholder="País" required readonly>
+                        <input type="text" id="state" name="state" placeholder="Provincia/Estado" required readonly>
+                        <input type="text" id="city" name="city" placeholder="Ciudad" required readonly>
+                        <input type="text" id="postalCode" name="postalCode" placeholder="Código Postal" required>
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+
+                        <!-- Botón para guardar los cambios -->
+                        <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
+                    </form>
                 </div>
             </div>
         </div>
