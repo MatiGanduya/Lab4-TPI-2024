@@ -14,6 +14,17 @@ class enterprise extends Model
         'description',
         'location_id',
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    public function userEnterprises()
+    {
+        return $this->hasMany(userEnterprises::class);
+    }
+
     public function services()
     {
         return $this->hasMany(Service::class);

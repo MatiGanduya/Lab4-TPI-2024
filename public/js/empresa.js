@@ -34,6 +34,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // Guardar las coordenadas en campos ocultos para enviarlas al servidor
             document.getElementById('latitude').value = e.latlng.lat;
             document.getElementById('longitude').value = e.latlng.lng;
+
+            // Obtener datos geográficos usando la API de Nominatim
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    const country = data.address.country;
+                    const state = data.address.state; // o region
+                    const city = data.address.city || data.address.town || data.address.village;
+                    const postalCode = data.address.postcode;
+
+                    // Aquí puedes llenar los campos del formulario con estos datos
+                    document.getElementById('country').value = country;
+                    document.getElementById('state').value = state;
+                    document.getElementById('city').value = city;
+                    document.getElementById('postalCode').value = postalCode;
+                })
+                .catch(error => console.error('Error al obtener datos geográficos:', error));
         }
     });
 
