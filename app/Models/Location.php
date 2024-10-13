@@ -10,4 +10,9 @@ class location extends Model
     use HasFactory;
 
     protected $fillable = ['country', 'province', 'city', 'address', 'postal_code', 'latitude', 'longitude'];
+
+    public function enterprises()
+    {
+        return $this->hasMany(Enterprise::class);
+    }
 }

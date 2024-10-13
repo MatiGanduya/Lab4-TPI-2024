@@ -12,13 +12,16 @@ class EmpresaController extends Controller
 {
     public function index()
     {
-        return view('empresa.indexEmpresa');
+        $user = Auth::user();
+        $empresa = $user->enterprises()->first();
+        return view('empresa.indexEmpresa', compact('empresa'));
     }
 
     public function guardar(Request $request)
     {
         // Validar los datos del formulario
         $request->validate([
+            'id' => 'nullable|exists:enterprises,id', // Validar si se está editando
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'latitude' => 'required|numeric',
@@ -29,32 +32,57 @@ class EmpresaController extends Controller
             'postalCode' => 'required|string|max:10',
         ]);
 
-        // Crear la ubicación de la empresa
-        $location = new Location();
-        $location->country = $request->country;
-        $location->province = $request->state;
-        $location->city = $request->city;
-        $location->address = $request->direccion;
-        $location->postal_code = $request->postalCode;
-        $location->latitude = $request->latitude;
-        $location->longitude = $request->longitude;
+        $enterprise = Enterprise::find($request->input('id'));
 
-        $location->save();
+        if ($enterprise) {
+            // Actualizar la empresa existente
+            $enterprise->name = $request->input('nombre');
+            $enterprise->save();
 
-        // Crear la empresa con la ubicación creada
-        $enterprise = new Enterprise();
-        $enterprise->name = $request->nombre;
-        $enterprise->location_id = $location->id; // Relacionar con la ubicación creada
-        $enterprise->save();
+            // Actualizar la ubicación
+            if ($enterprise->location) {
+                $enterprise->location->address = $request->input('direccion');
+                $enterprise->location->country = $request->input('country');
+                $enterprise->location->province = $request->input('state');
+                $enterprise->location->city = $request->input('city');
+                $enterprise->location->postal_code = $request->input('postalCode');
+                $enterprise->location->latitude = $request->input('latitude');
+                $enterprise->location->longitude = $request->input('longitude');
+                $enterprise->location->save();
+            }
+        } else {
+            // Crear nueva ubicación
+            $location = new Location();
+            $location->country = $request->country;
+            $location->province = $request->state;
+            $location->city = $request->city;
+            $location->address = $request->direccion;
+            $location->postal_code = $request->postalCode;
+            $location->latitude = $request->latitude;
+            $location->longitude = $request->longitude;
+            $location->save();
+
+            // Crear nueva empresa y relacionar con la ubicación
+            $enterprise = new Enterprise();
+            $enterprise->name = $request->nombre;
+            $enterprise->location_id = $location->id; // Asignar la ubicación recién creada
+            $enterprise->save();
+        }
 
         // Crear la relación en la tabla user_enterprises
-        User_enterprise::create([
-            'user_id' => Auth::id(),  // Usuario autenticado
-            'enterprise_id' => $enterprise->id,
-            'user_type' => 'admin', // Puedes ajustar esto según lo necesites
-        ]);
+        User_enterprise::updateOrCreate( // Usamos updateOrCreate para evitar duplicados
+            ['user_id' => Auth::id(), 'enterprise_id' => $enterprise->id],
+            ['user_type' => 'admin'] // Puedes ajustar esto según lo necesites
+        );
 
         // Redirigir o devolver una respuesta exitosa
         return redirect()->back()->with('success', 'Empresa guardada correctamente.');
     }
+
+    public function mostrarEmpresa()
+    {
+        $empresa = Enterprise::first(); // Asumiendo que tienes un modelo llamado Empresa
+        return view('empresa.indexEmpresa', compact('empresa')); // Asegúrate de pasar la variable a la vista
+    }
 }
+

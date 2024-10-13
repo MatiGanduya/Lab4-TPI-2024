@@ -9,7 +9,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
-                    <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">+</button>
+                    <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
+                        {{ isset($empresa) ? 'Editar' : '+' }}
+                    </button>
                 </div>
                 <div class="card-body">
                     <!-- Formulario para editar y guardar la empresa -->
@@ -19,13 +21,17 @@
                         <!-- Nombre de la empresa -->
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la empresa" disabled>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la empresa"
+                                   value="{{ isset($empresa) ? $empresa->name : '' }}"
+                                   {{ isset($empresa) ? '' : 'disabled' }}>
                         </div>
 
                         <!-- Dirección de la empresa -->
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" disabled>
+                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección"
+                                   value="{{ isset($empresa) ? $empresa->location->address : '' }}"
+                                   {{ isset($empresa) ? '' : 'disabled' }}>
                         </div>
 
                         <!-- Mapa interactivo -->
@@ -34,12 +40,17 @@
                         </div>
 
                         <!-- Campos ocultos para las coordenadas -->
-                        <input type="text" id="country" name="country" placeholder="País" required readonly>
-                        <input type="text" id="state" name="state" placeholder="Provincia/Estado" required readonly>
-                        <input type="text" id="city" name="city" placeholder="Ciudad" required readonly>
-                        <input type="text" id="postalCode" name="postalCode" placeholder="Código Postal" required>
-                        <input type="hidden" name="latitude" id="latitude">
-                        <input type="hidden" name="longitude" id="longitude">
+                        <input type="text" id="country" name="country" placeholder="País" required readonly
+                               value="{{ isset($empresa) ? $empresa->location->country : '' }}">
+                        <input type="text" id="state" name="state" placeholder="Provincia/Estado" required readonly
+                               value="{{ isset($empresa) ? $empresa->location->province : '' }}">
+                        <input type="text" id="city" name="city" placeholder="Ciudad" required readonly
+                               value="{{ isset($empresa) ? $empresa->location->city : '' }}">
+                        <input type="text" id="postalCode" name="postalCode" placeholder="Código Postal" required
+                               value="{{ isset($empresa) ? $empresa->location->postal_code : '' }}">
+                        <input type="hidden" name="latitude" id="latitude" value="{{ isset($empresa) ? $empresa->location->latitude : '' }}">
+                        <input type="hidden" name="longitude" id="longitude" value="{{ isset($empresa) ? $empresa->location->longitude : '' }}">
+                        <input type="hidden" name="id" value="{{ isset($empresa) ? $empresa->id : '' }}">
 
                         <!-- Botón para guardar los cambios -->
                         <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
