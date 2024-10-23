@@ -9,7 +9,7 @@ class ServiciosController extends Controller
 {
     public function index(){
 
-        // Obtener los servicios con la información de la empresa y colaborador
+
         $servicios = Service::join('service_collaborators', 'services.id', '=', 'service_collaborators.service_id')
             ->join('user_enterprises', 'service_collaborators.user_enterprise_id', '=', 'user_enterprises.id')
             ->join('enterprises', 'user_enterprises.enterprise_id', '=', 'enterprises.id')

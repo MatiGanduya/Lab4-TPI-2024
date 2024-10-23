@@ -7,13 +7,10 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    public function index(){
-
-        // Obtener los servicios con la información de la empresa y colaborador
-        $servicios = Service::join('service_collaborators', 'services.id', '=', 'service_collaborators.service_id')
-            ->join('user_enterprises', 'service_collaborators.user_enterprise_id', '=', 'user_enterprises.id')
-            ->join('enterprises', 'user_enterprises.enterprise_id', '=', 'enterprises.id')
-            ->join('users', 'user_enterprises.user_id', '=', 'users.id')
+    public function index()
+    {
+        // Obtener todos los servicios con la información de la empresa
+        $servicios = Service::join('enterprises', 'services.empresa_id', '=', 'enterprises.id')
             ->select(
                 'services.id AS service_id',
                 'services.name AS service_name',
@@ -23,9 +20,10 @@ class ServiceController extends Controller
                 'services.duration AS duration'
             )
             ->get();
-
+    
         return view('servicios.indexServicios', compact('servicios'));
     }
+    
     
         
     public function guardar(Request $request)
@@ -37,8 +35,8 @@ class ServiceController extends Controller
             'duration' => 'required|string',
         ]);
     
-        // Accede a la empresa asociada al usuario
-        $empresa = auth()->user()->enterprises->first(); // Obtener la primera empresa
+        
+        $empresa = auth()->user()->enterprises->first(); 
     
         if (!$empresa) {
             return redirect()->back()->with('error', 'No se encontró una empresa asociada al usuario.');
@@ -50,9 +48,8 @@ class ServiceController extends Controller
         $servicio->price = $request->price;
         $servicio->duration = $request->duration;
     
-        // Asegúrate de asignar el ID de la empresa correctamente
-        $servicio->empresa_id = $empresa->id; // Cambia 'enterprise_id' a 'empresa_id' si es el nombre correcto en la base de datos
-    
+        
+        $servicio->empresa_id = $empresa->id;
         $servicio->save();
     
         return redirect()->back()->with('success', 'Servicio creado exitosamente.');

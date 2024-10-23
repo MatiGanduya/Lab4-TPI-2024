@@ -19,9 +19,9 @@ class EmpresaController extends Controller
 
     public function guardar(Request $request)
     {
-        // Validar los datos del formulario
+        
         $request->validate([
-            'id' => 'nullable|exists:enterprises,id', // Validar si se está editando
+            'id' => 'nullable|exists:enterprises,id', 
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'latitude' => 'required|numeric',
@@ -35,11 +35,11 @@ class EmpresaController extends Controller
         $enterprise = Enterprise::find($request->input('id'));
 
         if ($enterprise) {
-            // Actualizar la empresa existente
+    
             $enterprise->name = $request->input('nombre');
             $enterprise->save();
 
-            // Actualizar la ubicación
+            
             if ($enterprise->location) {
                 $enterprise->location->address = $request->input('direccion');
                 $enterprise->location->country = $request->input('country');
@@ -51,7 +51,7 @@ class EmpresaController extends Controller
                 $enterprise->location->save();
             }
         } else {
-            // Crear nueva ubicación
+            
             $location = new Location();
             $location->country = $request->country;
             $location->province = $request->state;
@@ -62,27 +62,26 @@ class EmpresaController extends Controller
             $location->longitude = $request->longitude;
             $location->save();
 
-            // Crear nueva empresa y relacionar con la ubicación
             $enterprise = new Enterprise();
             $enterprise->name = $request->nombre;
-            $enterprise->location_id = $location->id; // Asignar la ubicación recién creada
+            $enterprise->location_id = $location->id; 
             $enterprise->save();
         }
 
-        // Crear la relación en la tabla user_enterprises
-        User_enterprise::updateOrCreate( // Usamos updateOrCreate para evitar duplicados
+        
+        User_enterprise::updateOrCreate( 
             ['user_id' => Auth::id(), 'enterprise_id' => $enterprise->id],
-            ['user_type' => 'admin'] // Puedes ajustar esto según lo necesites
+            ['user_type' => 'admin'] 
         );
 
-        // Redirigir o devolver una respuesta exitosa
+        
         return redirect()->back()->with('success', 'Empresa guardada correctamente.');
     }
 
     public function mostrarEmpresa()
     {
-        $empresa = Enterprise::first(); // Asumiendo que tienes un modelo llamado Empresa
-        return view('empresa.indexEmpresa', compact('empresa')); // Asegúrate de pasar la variable a la vista
-    }
+        $empresa = Enterprise::first(); 
+        return view('empresa.indexEmpresa', compact('empresa')); 
+  }
 }
 
