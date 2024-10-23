@@ -22,11 +22,11 @@ class enterprise extends Model
 
     public function userEnterprises()
     {
-        return $this->hasMany(userEnterprises::class);
+        return $this->hasMany(User_enterprise::class);
     }
 
     public function services()
     {
-        return $this->hasMany(Service::class);
+        return $this->hasMany(Service::class, 'empresa_id');
     }
 }

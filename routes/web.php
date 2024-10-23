@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ServiciosController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TurnosController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmpresaController;
@@ -21,7 +21,9 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios.indexServicios');
+Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
+
+Route::get('/servicios', [ServiceController::class, 'index'])->name('servicios.indexServicios');
 
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 

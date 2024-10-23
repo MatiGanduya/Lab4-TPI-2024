@@ -14,13 +14,14 @@ class service extends Model
         'description',
         'price',
         'duration',
+        'empresa_id',
     ];
 
-    public function enterprise(){
-
-        return $this->belongsTo(Enterprise::class, 'enterprise_id');
-
+    public function enterprise()
+    {
+        return $this->belongsTo(Enterprise::class, 'empresa_id'); 
     }
+    
 
     public function collaborator(){
 
