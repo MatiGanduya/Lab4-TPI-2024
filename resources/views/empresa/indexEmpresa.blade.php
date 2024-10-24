@@ -54,22 +54,32 @@
             </div>
         </div>
 
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Mis servicios</span>
-                    <button class="btn btn-outline-secondary btn-sm">+</button>
-                </div>
-                <div class="card-body">
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Servicio 1" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Servicio 2" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Servicio 3" disabled>
+<!-- Tarjeta Mis Servicios -->
+<div class="col-md-5">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Mis servicios</span>
+            <button class="btn btn-outline-secondary btn-sm" id="addServiceButton">+</button>
+        </div>
+        <div class="card-body">
+            @php
+            // Obtén la empresa asociada al usuario autenticado
+            $empresa = auth()->user()->enterprises->first();
+            @endphp
+<!-- Cargar y Mostrar Servicios -->
+            @if($empresa && $empresa->services->isNotEmpty())
+            <div class="row">
+                @foreach($empresa->services as $servicio)
+                <div class="col-md-12 mb-3">
+                    <div class="card service-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $servicio->name }}</h5>
+                            <p class="card-text">{{ $servicio->description }}</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Duración: {{ $servicio->duration }}</span>
+                                <span class="text-success font-weight-bold">${{ $servicio->price }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 @endforeach
@@ -115,7 +125,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
