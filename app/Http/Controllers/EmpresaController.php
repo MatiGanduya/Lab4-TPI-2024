@@ -13,7 +13,7 @@ class EmpresaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $empresa = $user->enterprises()->first();
+        $empresa = $user->enterprises->first();
         return view('empresa.indexEmpresa', compact('empresa'));
     }
 
@@ -64,7 +64,8 @@ class EmpresaController extends Controller
 
             $enterprise = new Enterprise();
             $enterprise->name = $request->nombre;
-            $enterprise->location_id = $location->id; 
+            $enterprise->location_id = $location->id;
+            $enterprise->owner_id = Auth::id();
             $enterprise->save();
         }
 

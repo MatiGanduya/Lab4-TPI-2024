@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            // Relación con la tabla 'locations' para la ubicación de la empresa
             $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
+            // Relación con la tabla 'users' para identificar al dueño (empresario)
+            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
