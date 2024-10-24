@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('enterprise_id')->constrained('enterprises')->onDelete('cascade');
             $table->unique(['user_id', 'enterprise_id']);
-            $table->enum('user_type', ['admin', 'client', 'employee'])->default('admin');
+            $table->enum('user_type', ['admin', 'employee'])->default('employee');
             $table->timestamps();
         });
     }
