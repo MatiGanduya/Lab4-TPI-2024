@@ -66,12 +66,11 @@
             <button class="btn btn-outline-secondary btn-sm" id="addServiceButton">+</button>
         </div>
         <div class="card-body">
-            <!-- Aquí se cargan los servicios dinámicamente -->
             @php
             // Obtén la empresa asociada al usuario autenticado
             $empresa = auth()->user()->enterprises->first();
             @endphp
-
+<!-- Cargar y Mostrar Servicios -->
             @if($empresa && $empresa->services->isNotEmpty())
             <div class="row">
                 @foreach($empresa->services as $servicio)
@@ -130,7 +129,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
