@@ -62,4 +62,9 @@ class User extends Authenticatable
      {
         return $this->belongsToMany(Enterprise::class, 'user_enterprises')->withPivot('user_type');
      }
+
+     public function availabilities()
+{
+    return $this->hasMany(Availability::class, 'userProf_id');
+}
 }
