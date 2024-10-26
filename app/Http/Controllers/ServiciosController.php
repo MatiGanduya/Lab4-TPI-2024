@@ -7,13 +7,10 @@ use Illuminate\Http\Request;
 
 class ServiciosController extends Controller
 {
-    public function index(){
-
-
-        $servicios = Service::join('service_collaborators', 'services.id', '=', 'service_collaborators.service_id')
-            ->join('user_enterprises', 'service_collaborators.user_enterprise_id', '=', 'user_enterprises.id')
-            ->join('enterprises', 'user_enterprises.enterprise_id', '=', 'enterprises.id')
-            ->join('users', 'user_enterprises.user_id', '=', 'users.id')
+    public function index()
+    {
+        // Obtener todos los servicios con la información de la empresa
+        $servicios = Service::join('enterprises', 'services.empresa_id', '=', 'enterprises.id')
             ->select(
                 'services.id AS service_id',
                 'services.name AS service_name',
@@ -23,7 +20,7 @@ class ServiciosController extends Controller
                 'services.duration AS duration'
             )
             ->get();
-
+    
         return view('servicios.indexServicios', compact('servicios'));
     }
 }

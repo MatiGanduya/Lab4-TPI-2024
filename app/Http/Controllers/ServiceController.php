@@ -54,6 +54,21 @@ class ServiceController extends Controller
     
         return redirect()->back()->with('success', 'Servicio creado exitosamente.');
     }
+
+    public function listarEmpresasConServicios(Request $request)
+{
+    $empresas = \App\Models\Enterprise::all(); // Obtenemos todas las empresas.
+    $empresaSeleccionada = null;
+    $servicios = collect(); // Colección vacía por defecto.
+
+    if ($request->has('empresa_id')) {
+        $empresaSeleccionada = \App\Models\Enterprise::find($request->input('empresa_id'));
+        $servicios = $empresaSeleccionada ? $empresaSeleccionada->services : collect();
+    }
+
+    return view('servicios.indexServicios', compact('empresas', 'servicios', 'empresaSeleccionada'));
+}
+
     
     
 }

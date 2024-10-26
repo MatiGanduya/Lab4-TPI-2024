@@ -23,7 +23,9 @@ Route::get('/', function () {
 
 Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
 
-Route::get('/servicios', [ServiceController::class, 'index'])->name('servicios.indexServicios');
+//Route::get('/servicios', [ServiceController::class, 'index'])->name('servicios.indexServicios');
+
+Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'])->name('servicios.index');
 
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 
