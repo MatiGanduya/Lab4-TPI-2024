@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('availabilities', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('start_time');  // Inicio de disponibilidad
-            $table->dateTime('end_time');    // Fin de disponibilidad
-            $table->enum('day_of_week', ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']);  // Días de la semana
+            $table->time('start_time');  // Inicio de disponibilidad
+            $table->time('end_time');    // Fin de disponibilidad
+            $table->enum('day_of_week', ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']);  // Días de la semana
             $table->foreignId('userProf_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

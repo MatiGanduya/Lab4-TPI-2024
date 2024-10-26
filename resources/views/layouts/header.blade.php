@@ -27,7 +27,7 @@
                     <li><a href="{{ Route('servicios.indexServicios') }}" class="btn btn-outline-light me-2">Turnos</a></li>
                     @auth
                     <li><a href="{{ Route('empresa.indexEmpresa') }}" class="btn btn-outline-light me-2">Mi Empresa y Servicios</a></li>
-                    <li><a href="#" class="btn btn-outline-light me-2">Mi disponibilidad</a></li>
+                    <li><a href="{{ Route('disponibilidad.indexDisponibilidad') }}" class="btn btn-outline-light me-2">Mi disponibilidad</a></li>
                     @endauth
                 </ul>
 
