@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Enterprise;
 use App\Models\Location;
 use App\Models\User_enterprise;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +32,10 @@ class EmpresaController extends Controller
             'postalCode' => 'required|string|max:10',
         ]);
 
+        $usuario = Auth::user(); 
+        if (!$usuario instanceof User) {
+            return redirect()->back()->with('error', 'Usuario no autenticado o inválido.');
+        }
         $enterprise = Enterprise::find($request->input('id'));
 
         if ($enterprise) {
@@ -71,6 +76,16 @@ class EmpresaController extends Controller
             ['user_id' => Auth::id(), 'enterprise_id' => $enterprise->id],
             ['user_type' => 'admin']
         );
+
+
+        $usuario->user_type = 'admin';
+
+    
+        if ($usuario->user_type !== null) {
+            $usuario->save(); 
+        } else {
+            return redirect()->back()->with('error', 'El tipo de usuario no puede ser nulo.');
+        }
 
 
         return redirect()->back()->with('success', 'Empresa guardada correctamente.');

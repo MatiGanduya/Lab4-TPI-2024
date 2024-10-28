@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
 
-//Route::get('/servicios', [ServiceController::class, 'index'])->name('servicios.indexServicios');
+Route::put('/servicios/actualizar', [ServiceController::class, 'actualizar'])->name('servicios.actualizar');
 
 Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'])->name('servicios.index');
 

@@ -69,6 +69,31 @@ class ServiceController extends Controller
     return view('servicios.indexServicios', compact('empresas', 'servicios', 'empresaSeleccionada'));
 }
 
+
+public function actualizar(Request $request)
+{
+    // Validar los datos entrantes
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'price' => 'required|numeric',
+        'duration' => 'required|string',
+    ]);
+
+    // Buscar el servicio por ID
+    $servicio = Service::findOrFail($request->id); // Utiliza findOrFail para manejar el error si no se encuentra el servicio
+
+    // Actualizar los campos del servicio
+    $servicio->name = $request->name;
+    $servicio->description = $request->description;
+    $servicio->price = $request->price;
+    $servicio->duration = $request->duration;
     
+    // Guardar cambios en la base de datos
+    $servicio->save();
+
+    // Redirigir o devolver respuesta
+    return redirect()->back()->with('success', 'Servicio actualizado correctamente.');
+}
     
 }
