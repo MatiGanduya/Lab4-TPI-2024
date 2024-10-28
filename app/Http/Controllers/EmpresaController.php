@@ -20,6 +20,12 @@ class EmpresaController extends Controller
 
     public function guardar(Request $request)
     {
+
+        $usuario = Auth::user(); 
+
+        if (!$usuario instanceof User || $usuario->user_type === 'employee') {
+            return redirect()->back()->with('error', 'No tiene permisos para guardar o editar empresas.');
+        }
         $request->validate([
             'id' => 'nullable|exists:enterprises,id',
             'nombre' => 'required|string|max:255',
@@ -33,7 +39,6 @@ class EmpresaController extends Controller
             'postalCode' => 'required|string|max:10',
         ]);
 
-        $usuario = Auth::user(); 
         if (!$usuario instanceof User) {
             return redirect()->back()->with('error', 'Usuario no autenticado o inválido.');
         }
