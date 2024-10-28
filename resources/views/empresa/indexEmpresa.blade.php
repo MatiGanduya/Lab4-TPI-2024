@@ -25,6 +25,12 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Descripción de la empresa"
+                                {{ isset($empresa) ? 'disabled' : 'disabled' }}>{{ isset($empresa) ? $empresa->description : '' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
                             <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección"
                                 value="{{ isset($empresa) ? $empresa->location->address : '' }}"
@@ -140,7 +146,7 @@
             <form action="{{ route('servicios.actualizar') }}" method="POST" id="editServiceForm">
                 @csrf
                 <input type="hidden" name="_method" value="PUT"> <!-- Método PUT -->
-                <input type="hidden" id="editServiceId" name="id"> 
+                <input type="hidden" id="editServiceId" name="id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editServiceModalLabel">Editar Servicio</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -203,6 +209,7 @@
     // Manejador para habilitar el formulario de empresa
     document.getElementById('editEmpresa').addEventListener('click', function() {
         document.getElementById('nombre').disabled = false;
+        document.getElementById('descripcion').disabled = false;
         document.getElementById('direccion').disabled = false;
         document.getElementById('saveEmpresa').style.display = 'block';
     });

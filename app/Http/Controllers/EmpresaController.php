@@ -24,6 +24,7 @@ class EmpresaController extends Controller
             'id' => 'nullable|exists:enterprises,id',
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:500', 
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'country' => 'required|string|max:255',
@@ -37,11 +38,12 @@ class EmpresaController extends Controller
             return redirect()->back()->with('error', 'Usuario no autenticado o inválido.');
         }
         $enterprise = Enterprise::find($request->input('id'));
-
+    
         if ($enterprise) {
             $enterprise->name = $request->input('nombre');
+            $enterprise->description = $request->input('descripcion'); // Guardar descripción
             $enterprise->save();
-
+    
             if ($enterprise->location) {
                 $enterprise->location->address = $request->input('direccion');
                 $enterprise->location->country = $request->input('country');
@@ -62,15 +64,14 @@ class EmpresaController extends Controller
             $location->latitude = $request->latitude;
             $location->longitude = $request->longitude;
             $location->save();
-
-
+    
             $enterprise = new Enterprise();
             $enterprise->name = $request->nombre;
+            $enterprise->description = $request->descripcion; 
             $enterprise->location_id = $location->id;
             $enterprise->owner_id = Auth::id();
             $enterprise->save();
         }
-
 
         User_enterprise::updateOrCreate(
             ['user_id' => Auth::id(), 'enterprise_id' => $enterprise->id],
