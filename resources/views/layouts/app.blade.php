@@ -32,5 +32,6 @@
                 {{ $slot }}
             </main>
         </div>
+        <script src="{{ asset('js/empresa.js') }}"></script>
     </body>
 </html>
