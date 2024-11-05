@@ -65,7 +65,8 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mis servicios</span>
-                    <button class="btn btn-outline-secondary btn-sm" id="addServiceButton">+</button>
+                    <button class="btn btn-outline-secondary btn-sm" id="addServiceButton"
+                        {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">+</button>
                 </div>
                 <div class="card-body">
                     @php
@@ -101,16 +102,14 @@
 </div>
 
 <!-- Modal para agregar nuevo servicio -->
-<div class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ route('servicios.guardar') }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="addServiceModalLabel">Agregar Servicio</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -131,7 +130,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
@@ -149,9 +148,7 @@
                 <input type="hidden" id="editServiceId" name="id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editServiceModalLabel">Editar Servicio</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -172,7 +169,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
@@ -182,10 +179,6 @@
 
 <!-- Scripts para manejar la lógica de los modales -->
 <script>
-    document.getElementById('addServiceButton').addEventListener('click', function() {
-        $('#addServiceModal').modal('show');
-    });
-
     // Mostrar el modal para editar un servicio
     document.querySelectorAll('.service-card').forEach(function(card) {
         card.addEventListener('click', function() {
@@ -213,6 +206,13 @@
         document.getElementById('direccion').disabled = false;
         document.getElementById('saveEmpresa').style.display = 'block';
     });
+
+    document.getElementById('addServiceButton').addEventListener('click', function() {
+    var myModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+    myModal.show();
+});
+
+
 </script>
 
 @endsection
