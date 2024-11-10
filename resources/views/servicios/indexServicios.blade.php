@@ -50,7 +50,7 @@
                             <td>{{ $servicio->description }}</td>
                             <td>${{ number_format($servicio->price, 2) }}</td>
                             <td>{{ $servicio->duration }}</td>
-                            <td><a href="{{ route('turnos.seleccion', ['servicio_id' => $servicio->id]) }}" class="btn btn-outline-primary">Solicitar turno</a></td>
+                            <td><a href="{{ route('turnos.seleccionFechaHora', ['servicio_id' => $servicio->id]) }}" class="btn btn-outline-primary">Solicitar turno</a></td>
                         </tr>
                         @endforeach
                     </tbody>
