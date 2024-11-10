@@ -29,6 +29,11 @@ Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'
 
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 
+Route::get('/turnos/seleccion/{servicio_id}', [TurnosController::class, 'seleccionFechayHora'])->name('turnos.seleccion');
+
+Route::post('/turnos/reservar/{servicio_id}', [TurnosController::class, 'reservar'])->name('turnos.reservar');
+Route::get('/disponibilidad/horarios/{dia}', [DisponibilidadController::class, 'horarios']);
+
 Route::get('/home', function () {
     return view('home');
 })->middleware(['auth', 'verified'])->name('home');

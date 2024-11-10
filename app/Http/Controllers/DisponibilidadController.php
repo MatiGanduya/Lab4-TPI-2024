@@ -9,10 +9,20 @@ class DisponibilidadController extends Controller
         // Mostrar disponibilidad de un usuario específico
         public function index()
         {
-            $disponibilidades = Availability::where('userProf_id', auth()->id())->get();
-            $user = auth()->user(); // Obtiene el usuario autenticado
-            return view('disponibilidad.indexDisponibilidad', compact('disponibilidades', 'user'));
+            // Obtener la empresa a la que pertenece el usuario
+            $user = auth()->user();
+            $empresa = $user->enterprises->first(); // Suponiendo que el usuario tiene una relación con una o más empresas
+
+            // Obtener los usuarios asociados con la empresa
+            $usuariosDeLaEmpresa = $empresa->users;
+
+            // Obtener las disponibilidades de los usuarios de esa empresa
+            $disponibilidades = Availability::whereIn('userProf_id', $usuariosDeLaEmpresa->pluck('id'))->get();
+
+            dd($disponibilidad);
+            return view('disponibilidad.indexDisponibilidad', compact('disponibilidades', 'user', 'empresa'));
         }
+
 
         public function create()
         {
@@ -60,6 +70,17 @@ class DisponibilidadController extends Controller
             ]);
 
             return redirect()->route('disponibilidad.indexDisponibilidad')->with('success', 'Disponibilidad creada exitosamente.');
+        }
+
+        // Agregar este método a DisponibilidadController
+        public function horarios($dia)
+        {
+            // Obtener las disponibilidades para el día seleccionado
+            $disponibilidades = Availability::where('day_of_week', $dia)
+                ->whereIn('userProf_id', auth()->user()->enterprises->first()->users->pluck('id'))
+                ->get(['start_time', 'end_time']);
+
+            return response()->json(['horas' => $disponibilidades]);
         }
 
         public function destroy($id)
