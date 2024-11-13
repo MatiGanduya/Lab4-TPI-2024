@@ -42,19 +42,27 @@ class AppointmentController extends Controller
         // Obtener la empresa asociada al servicio
         $empresa = $servicio->enterprise;
 
-        // Obtener el usuario profesional que pertenece a esta empresa
         $usuarioProfesional = $empresa->userEnterprises->first()->user;
 
-        // Crear el turno en la base de datos con el ID del usuario profesional
         Appointment::create([
             'appointment_date' => $appointmentDate,
             'status' => 'pending',
-            'user_id' => auth()->id(),             // ID del usuario que solicita el turno
-            'userProf_id' => $usuarioProfesional->id,  // ID del profesional asociado
+            'user_id' => auth()->id(),
+            'userProf_id' => $usuarioProfesional->id,
             'service_id' => $servicio_id,
         ]);
 
         // Redirigir o retornar una respuesta
         return redirect()->route('turnos.indexTurnos')->with('success', 'Turno confirmado exitosamente');
+    }
+
+    public function cancel($id)
+    {
+        $turno = Appointment::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        $turno->status = 'cancelled';
+        $turno->save();
+
+        return redirect()->route('turnos.indexTurnos')->with('success', 'Turno cancelado exitosamente');
     }
 }
