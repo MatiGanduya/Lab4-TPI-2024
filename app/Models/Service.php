@@ -19,14 +19,15 @@ class service extends Model
 
     public function enterprise()
     {
-        return $this->belongsTo(Enterprise::class, 'empresa_id'); 
+        return $this->belongsTo(Enterprise::class, 'empresa_id');
     }
-    
+
 
     public function collaborator(){
 
         return $this->belongsTo(User_enterprise::class, 'user_enterprise_id');
 
     }
+
 
 }

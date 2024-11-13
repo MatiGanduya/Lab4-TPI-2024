@@ -9,18 +9,9 @@ class DisponibilidadController extends Controller
         // Mostrar disponibilidad de un usuario específico
         public function index()
         {
-            // Obtener la empresa a la que pertenece el usuario
-            $user = auth()->user();
-            $empresa = $user->enterprises->first(); // Suponiendo que el usuario tiene una relación con una o más empresas
-
-            // Obtener los usuarios asociados con la empresa
-            $usuariosDeLaEmpresa = $empresa->users;
-
-            // Obtener las disponibilidades de los usuarios de esa empresa
-            $disponibilidades = Availability::whereIn('userProf_id', $usuariosDeLaEmpresa->pluck('id'))->get();
-
-            dd($disponibilidad);
-            return view('disponibilidad.indexDisponibilidad', compact('disponibilidades', 'user', 'empresa'));
+            $disponibilidades = Availability::where('userProf_id', auth()->id())->get();
+            $user = auth()->user(); // Obtiene el usuario autenticado
+            return view('disponibilidad.indexDisponibilidad', compact('disponibilidades', 'user'));
         }
 
 
