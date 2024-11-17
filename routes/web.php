@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/turnos', [TurnosController::class, 'index'])->name('turnos.indexTurnos');
     Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.indexEmpresa');
+    Route::post('/colaborador/agregar', [EmpresaController::class, 'agregarColaborador'])->name('colaborador.agregar');
     Route::get('/disponibilidad', [DisponibilidadController::class, 'index'])->name('disponibilidad.indexDisponibilidad');
     Route::get('/mi-disponibilidad/crear', [DisponibilidadController::class, 'create'])->name('disponibilidad.create');
     Route::post('/mi-disponibilidad', [DisponibilidadController::class, 'store'])->name('disponibilidad.store');

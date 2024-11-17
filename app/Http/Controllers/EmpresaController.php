@@ -15,13 +15,15 @@ class EmpresaController extends Controller
     {
         $user = Auth::user();
         $empresa = $user->enterprises->first();
-        return view('empresa.indexEmpresa', compact('empresa'));
+        $clientes = User::where('user_type', 'client')->get(); // Usuarios tipo cliente
+        return view('empresa.indexEmpresa', compact('empresa', 'clientes'));
+
     }
 
     public function guardar(Request $request)
     {
 
-        $usuario = Auth::user(); 
+        $usuario = Auth::user();
 
         if (!$usuario instanceof User || $usuario->user_type === 'employee') {
             return redirect()->back()->with('error', 'No tiene permisos para guardar o editar empresas.');
@@ -30,7 +32,7 @@ class EmpresaController extends Controller
             'id' => 'nullable|exists:enterprises,id',
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:500', 
+            'descripcion' => 'nullable|string|max:500',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'country' => 'required|string|max:255',
@@ -43,12 +45,12 @@ class EmpresaController extends Controller
             return redirect()->back()->with('error', 'Usuario no autenticado o inválido.');
         }
         $enterprise = Enterprise::find($request->input('id'));
-    
+
         if ($enterprise) {
             $enterprise->name = $request->input('nombre');
             $enterprise->description = $request->input('descripcion'); // Guardar descripción
             $enterprise->save();
-    
+
             if ($enterprise->location) {
                 $enterprise->location->address = $request->input('direccion');
                 $enterprise->location->country = $request->input('country');
@@ -69,10 +71,10 @@ class EmpresaController extends Controller
             $location->latitude = $request->latitude;
             $location->longitude = $request->longitude;
             $location->save();
-    
+
             $enterprise = new Enterprise();
             $enterprise->name = $request->nombre;
-            $enterprise->description = $request->descripcion; 
+            $enterprise->description = $request->descripcion;
             $enterprise->location_id = $location->id;
             $enterprise->owner_id = Auth::id();
             $enterprise->save();
@@ -86,9 +88,9 @@ class EmpresaController extends Controller
 
         $usuario->user_type = 'admin';
 
-    
+
         if ($usuario->user_type !== null) {
-            $usuario->save(); 
+            $usuario->save();
         } else {
             return redirect()->back()->with('error', 'El tipo de usuario no puede ser nulo.');
         }
@@ -101,6 +103,31 @@ class EmpresaController extends Controller
     {
         $empresa = Enterprise::first();
         return view('empresa.indexEmpresa', compact('empresa'));
+    }
+
+    public function agregarColaborador(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'enterprise_id' => 'required|exists:enterprises,id',
+        ]);
+
+        // Actualizar el tipo de usuario a "employee"
+        $user = User::find($request->user_id);
+        $user->user_type = 'employee'; // Enum: 'client', 'employee', etc.
+        $user->save();
+
+        // Crear la relación en "user_enterprises"
+        User_enterprise::create([
+            'user_id' => $request->user_id,
+            'enterprise_id' => $request->enterprise_id,
+            'user_type' => 'employee', // Enum
+        ]);
+        if (User_enterprise::where('user_id', $request->user_id)->exists()) {
+            return response()->json(['message' => 'El usuario ya está vinculado a una empresa'], 400);
+        }
+
+        return response()->json(['message' => 'Colaborador agregado exitosamente']);
     }
 }
 

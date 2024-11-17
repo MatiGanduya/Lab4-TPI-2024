@@ -8,6 +8,14 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
+                    <!-- Botón en la tarjeta "Mi Empresa" -->
+                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
+                        {{ !$empresa ? 'disabled' : '' }}
+                        style="{{ !$empresa ? 'opacity: 0.5;' : '' }}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addCollaboratorModal">
+                        Agregar Colaborador
+                    </button>
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
                     </button>
@@ -211,8 +219,56 @@
     var myModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
     myModal.show();
 });
-
-
 </script>
+<script>
+    document.getElementById('addCollaboratorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            location.reload(); // Refresca la página para ver los cambios
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
+<!-- Modal para agregar colaborador -->
+<div class="modal fade" id="addCollaboratorModal" tabindex="-1" aria-labelledby="addCollaboratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('colaborador.agregar') }}" method="POST" id="addCollaboratorForm">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCollaboratorModalLabel">Agregar Colaborador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="user_id">Seleccionar Usuario</label>
+                        <select class="form-control" id="user_id" name="user_id" required>
+                            <option value="">-- Seleccionar Usuario --</option>
+                            @foreach ($clientes as $cliente)
+                                <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection
