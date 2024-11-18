@@ -6,6 +6,7 @@ use App\Http\Controllers\TurnosController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\DisponibilidadController;
+use App\Http\Controllers\AppointmentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,14 +21,6 @@ use App\Http\Controllers\DisponibilidadController;
 Route::get('/', function () {
     return view('home');
 });
-
-Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
-
-Route::put('/servicios/actualizar', [ServiceController::class, 'actualizar'])->name('servicios.actualizar');
-
-Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'])->name('servicios.index');
-
-Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 
 Route::get('/home', function () {
     return view('home');
@@ -44,7 +37,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/mi-disponibilidad/crear', [DisponibilidadController::class, 'create'])->name('disponibilidad.create');
     Route::post('/mi-disponibilidad', [DisponibilidadController::class, 'store'])->name('disponibilidad.store');
     Route::delete('/disponibilidad/{id}', [DisponibilidadController::class, 'destroy'])->name('disponibilidad.destroy');
+    Route::get('/mis-turnos', [AppointmentController::class, 'index'])->name('turnos.index');
+    Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
 
+Route::put('/servicios/actualizar', [ServiceController::class, 'actualizar'])->name('servicios.actualizar');
+
+Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'])->name('servicios.index');
+
+Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
+
+// Ruta para solicitar el turno
+Route::get('/turnos/seleccion-fecha-hora/{servicio_id}', [TurnosController::class, 'seleccionFechaHora'])->name('turnos.seleccionFechaHora');
+Route::get('/turnos/seleccion/{servicio_id}/{dia_de_la_semana}', [TurnosController::class, 'mostrarDisponibilidad'])->name('turnos.mostrarDisponibilidad');
+
+Route::post('/turnos/confirmar/{servicio_id}', [AppointmentController::class, 'store'])->name('turnos.confirmar');
+
+Route::get('/disponibilidad/horarios/{dia}', [DisponibilidadController::class, 'horarios']);
+
+Route::delete('/turnos/cancel/{id}', [AppointmentController::class, 'cancel'])->name('turnos.cancel');
 });
 
 require __DIR__.'/auth.php';

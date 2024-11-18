@@ -14,6 +14,7 @@ class DisponibilidadController extends Controller
             return view('disponibilidad.indexDisponibilidad', compact('disponibilidades', 'user'));
         }
 
+
         public function create()
         {
             return view('disponibilidad.create');
@@ -60,6 +61,17 @@ class DisponibilidadController extends Controller
             ]);
 
             return redirect()->route('disponibilidad.indexDisponibilidad')->with('success', 'Disponibilidad creada exitosamente.');
+        }
+
+        // Agregar este método a DisponibilidadController
+        public function horarios($dia)
+        {
+            // Obtener las disponibilidades para el día seleccionado
+            $disponibilidades = Availability::where('day_of_week', $dia)
+                ->whereIn('userProf_id', auth()->user()->enterprises->first()->users->pluck('id'))
+                ->get(['start_time', 'end_time']);
+
+            return response()->json(['horas' => $disponibilidades]);
         }
 
         public function destroy($id)
