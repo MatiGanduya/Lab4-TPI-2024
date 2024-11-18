@@ -81,7 +81,7 @@ class TurnosController extends Controller
                 // Agregar los intervalos ocupados
                 while ($startTime < $endTime) {
                     $horariosOcupados[] = $startTime->format('H:i');
-                    $startTime->addMinutes(30); // Los turnos ocupados también se verifican en intervalos de 30 minutos
+                    $startTime->addMinutes(15); // Los turnos ocupados también se verifican en intervalos de 30 minutos
                 }
             }
             //dd($horariosOcupados);
@@ -100,7 +100,7 @@ class TurnosController extends Controller
                         $horasDisponibles[] = $hora;
                     }
 
-                    $startTime->addMinutes(30); // Incrementar en intervalos de 30 minutos
+                    $startTime->addMinutes(15); // Incrementar en intervalos de 30 minutos
                 }
             }
             //dd($servicio, $empresa, $usuario);
