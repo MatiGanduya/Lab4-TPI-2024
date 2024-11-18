@@ -131,10 +131,10 @@
                     <div class="form-group">
                         <label for="servicePrice">Precio</label>
                         <input type="number" class="form-control" id="servicePrice" name="price" required>
-                    </div>
-                    <div class="form-group">
+                        <div class="form-group">
                         <label for="serviceDuration">Duración</label>
-                        <input type="text" class="form-control" id="serviceDuration" name="duration" required>
+                        <select class="form-control" id="serviceDuration" name="duration" required>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -186,6 +186,32 @@
 </div>
 
 <!-- Scripts para manejar la lógica de los modales -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const durationSelect = document.getElementById('serviceDuration');
+        const maxMinutes = 24 * 60; // 24 horas en minutos
+        const interval = 15; // Intervalo de 15 minutos
+
+        for (let minutes = interval; minutes <= maxMinutes; minutes += interval) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            let optionText = '';
+
+            if (hours > 0) {
+                optionText += `${hours} hora${hours > 1 ? 's' : ''}`;
+            }
+            if (mins > 0) {
+                optionText += ` ${mins} minuto${mins > 1 ? 's' : ''}`;
+            }
+
+            const option = document.createElement('option');
+            option.value = `${hours}:${mins < 10 ? '0' + mins : mins}`;
+            option.textContent = optionText.trim();
+            durationSelect.appendChild(option);
+        }
+    });
+</script>
+
 <script>
     // Mostrar el modal para editar un servicio
     document.querySelectorAll('.service-card').forEach(function(card) {
