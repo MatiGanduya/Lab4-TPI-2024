@@ -283,7 +283,7 @@
         });
 
 
-
+    });
 
         // Evento para eliminar colaborador
         document.querySelectorAll('.delete-collaborator-form').forEach(form => {
@@ -317,12 +317,7 @@
             console.error('Error:', error);
             alert('Hubo un error al eliminar el colaborador.');
         }
-    });
-});
-
-
-
-
+    })
     });
 </script>
 @endsection
