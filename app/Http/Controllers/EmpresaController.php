@@ -129,5 +129,20 @@ class EmpresaController extends Controller
 
         return response()->json(['message' => 'Colaborador agregado exitosamente']);
     }
+
+    public function getUsuariosPorEmpresa($empresa_id)
+    {
+        // Buscar usuarios relacionados con la empresa
+        $usuarios = User::whereHas('enterprises', function ($query) use ($empresa_id) {
+            $query->where('enterprises.id', $empresa_id);  // Asegúrate de que 'enterprises.id' está correcto
+        })->get();
+
+
+        //dd($usuarios);
+        // Devolver los usuarios como JSON
+        return response()->json($usuarios);
+
+    }
+
 }
 

@@ -52,10 +52,11 @@
 
             // Obtener el ID del servicio
             var servicio_id = {{ $servicio->id }};  // El ID del servicio
+            var usuario_colaborador_id = {{ $colaborador->id }};
             var fecha = info.dateStr; // La fecha seleccionada
 
             // Realizar la solicitud AJAX para obtener las horas disponibles
-            fetch(`/turnos/seleccion/${servicio_id}/${fecha}`)
+            fetch(`/turnos/seleccion/${servicio_id}/${usuario_colaborador_id}/${fecha}`)
             .then(response => response.text())  // Cambiar a response.text() para ver la respuesta sin procesar
             .then(data => {
         console.log(data);  // Imprime la respuesta para ver qué está devolviendo el servidor
