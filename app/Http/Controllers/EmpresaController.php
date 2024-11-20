@@ -8,17 +8,28 @@ use App\Models\User_enterprise;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class EmpresaController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $empresa = $user->enterprises->first();
-        $clientes = User::where('user_type', 'client')->get(); // Usuarios tipo cliente
-        return view('empresa.indexEmpresa', compact('empresa', 'clientes'));
+        $empresa = $user->enterprises->first(); // Asegúrate de que solo haya una empresa asociada al usuario
 
+        // Obtener los colaboradores (usuarios con user_type 'employee') de la empresa
+        $collaborators = $empresa->users()
+                                 ->where('user_enterprises.user_type', 'employee') // Especificar la columna de la tabla pivote
+                                 ->get();
+
+        $clientes = User::where('user_type', 'client')->get(); // Obtener usuarios tipo cliente
+
+        // Pasar las variables a la vista
+        return view('empresa.indexEmpresa', compact('empresa', 'clientes', 'collaborators'));
     }
+
+
 
     public function guardar(Request $request)
     {
@@ -104,30 +115,91 @@ class EmpresaController extends Controller
         $empresa = Enterprise::first();
         return view('empresa.indexEmpresa', compact('empresa'));
     }
-
-    public function agregarColaborador(Request $request)
+    public function addCollaborator(Request $request)
     {
+        // Validar la entrada del formulario
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'enterprise_id' => 'required|exists:enterprises,id',
+            'user_id' => 'required|exists:users,id', // Validar el ID del usuario
+            'enterprise_id' => 'required|exists:enterprises,id', // Validar el ID de la empresa
         ]);
 
-        // Actualizar el tipo de usuario a "employee"
+        // Buscar al usuario por su ID
         $user = User::find($request->user_id);
+
+        // Verificar si el usuario ya está vinculado a alguna empresa
+        if (User_enterprise::where('user_id', $user->id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'El usuario ya está vinculado a una empresa.'], 400);
+        }
+
+        // Actualizar el tipo de usuario a "employee"
         $user->user_type = 'employee'; // Enum: 'client', 'employee', etc.
         $user->save();
 
-        // Crear la relación en "user_enterprises"
-        User_enterprise::create([
-            'user_id' => $request->user_id,
+        // Crear la relación en "users_enterprise"
+        $relation = User_enterprise::create([
+            'user_id' => $user->id,
             'enterprise_id' => $request->enterprise_id,
             'user_type' => 'employee', // Enum
         ]);
-        if (User_enterprise::where('user_id', $request->user_id)->exists()) {
-            return response()->json(['message' => 'El usuario ya está vinculado a una empresa'], 400);
+
+        // Respuesta JSON para solicitudes AJAX
+        return response()->json([
+            'success' => true,
+            'message' => 'Colaborador agregado correctamente.',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
+
+
+
+
+    // Muestra los colaboradores de una empresa
+    public function getCollaborators($enterpriseId)
+    {
+        $collaborators = DB::table('users_enterprise')
+            ->join('users', 'users.id', '=', 'users_enterprise.user_id')
+            ->where('users_enterprise.enterprise_id', $enterpriseId)
+            ->where('users_enterprise.user_type', 'collaborator')
+            ->select('users.id', 'users.name', 'users.email')
+            ->get();
+
+        return view('manage_collaborators', compact('collaborators', 'enterpriseId'));
+    }
+
+    public function deleteCollaborator(Request $request)
+    {
+        $enterpriseId = $request->input('enterprise_id');
+        $userId = $request->input('user_id');
+
+        $relation = DB::table('user_enterprises')
+            ->where('user_id', $userId)
+            ->where('enterprise_id', $enterpriseId)
+            ->where('user_type', 'employee')
+            ->first();
+
+        if ($relation) {
+            // Eliminar la relación en la tabla user_enterprises
+            DB::table('user_enterprises')
+                ->where('user_id', $userId)
+                ->where('enterprise_id', $enterpriseId)
+                ->delete();
+
+            // Cambiar el tipo de usuario a cliente
+            $user = User::find($userId);
+            $user->user_type = 'client';
+            $user->save();
+
+            // Redirigir con un mensaje de éxito
+            return redirect()->back()->with('success', 'Colaborador eliminado correctamente.');
         }
 
-        return response()->json(['message' => 'Colaborador agregado exitosamente']);
+        return redirect()->back()->with('error', 'El colaborador no se encontró o no pertenece a esta empresa.');
     }
+
+
 }
 
