@@ -316,68 +316,69 @@
 </script>
 
 <script>
-    // Agregar un colaborador
+    // Mostrar el modal para editar un servicio
     document.getElementById('addCollaboratorForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Evita el envío normal del formulario
+    e.preventDefault(); // Evita el envío normal del formulario
 
-        const formData = new FormData(this); // Recoge los datos del formulario
+    const formData = new FormData(this); // Recoge los datos del formulario
 
-        fetch("{{ route('addCollaborator') }}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest", // Indica que es una solicitud AJAX
+    fetch("{{ route('addCollaborator') }}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest", // Indica que es una solicitud AJAX
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message); // Muestra el mensaje
+                location.reload(); // Recarga la página para asegurar que todo esté actualizado
+            } else {
+                alert(data.message);
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message); // Muestra el mensaje
-                    location.reload(); // Recarga la página para asegurar que todo esté actualizado
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Hubo un error al agregar el colaborador.');
-            });
-    });
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al agregar el colaborador.');
+        });
 
+
+    });
 
         // Evento para eliminar colaborador
         document.querySelectorAll('.delete-collaborator-form').forEach(form => {
-            form.addEventListener('submit', async function (e) {
-            e.preventDefault(); // Detener el envío tradicional del formulario
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault(); // Detener el envío tradicional del formulario
 
-            const formData = new FormData(this);
+        const formData = new FormData(this);
 
-            try {
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                    body: formData,
-                });
-
-                if (!response.ok) throw new Error('Error en la solicitud');
-
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(data.message); // Mostrar mensaje de éxito
-                    const userId = formData.get('user_id');
-                    const row = document.getElementById(`row-${userId}`);
-                    if (row) row.remove(); // Eliminar la fila de la tabla
-                } else {
-                    alert(data.message); // Mostrar mensaje de error
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al eliminar el colaborador.');
-            }
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: formData,
             });
-        });
+
+            if (!response.ok) throw new Error('Error en la solicitud');
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message); // Mostrar mensaje de éxito
+                const userId = formData.get('user_id');
+                const row = document.getElementById(`row-${userId}`);
+                if (row) row.remove(); // Eliminar la fila de la tabla
+            } else {
+                alert(data.message); // Mostrar mensaje de error
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al eliminar el colaborador.');
+        }
+    })
+    });
 </script>
 @endsection
