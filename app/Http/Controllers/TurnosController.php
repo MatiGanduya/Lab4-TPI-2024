@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\Availability;
 use App\Models\User_enterprise;
 use App\Models\Appointment;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,88 +31,83 @@ class TurnosController extends Controller
     }
 
 
-    public function seleccionFechaHora($servicio_id)
+    public function seleccionFechaHora($servicio_id, $usuario_colaborador_id)
     {
         // Obtener el servicio basado en el ID
         $servicio = Service::findOrFail($servicio_id);
 
-        // Aquí podrías pasar cualquier otro dato necesario para la vista, como disponibilidad de turnos, etc.
-        return view('turnos.seleccionFechayHora', compact('servicio'));
+        // Obtener el colaborador basado en el ID
+        $colaborador = User::findOrFail($usuario_colaborador_id);
+        //dd($colaborador);
+        // Aquí puedes pasar otros datos necesarios, como la disponibilidad del colaborador o detalles adicionales
+        return view('turnos.seleccionFechayHora', compact('servicio', 'colaborador'));
     }
 
-    public function mostrarDisponibilidad($servicio_id, $fecha)
-    {
-        try {
-            // Obtener el servicio por su ID
-            $servicio = Service::findOrFail($servicio_id);
 
-            // Obtener la empresa asociada al servicio
-            $empresa = $servicio->enterprise;
+    public function mostrarDisponibilidad($servicio_id, $usuario_colaborador_id, $fecha)
+{
+    try {
+        // Obtener el servicio por su ID
+        $servicio = Service::findOrFail($servicio_id);
 
-            // Obtener el usuario que pertenece a esta empresa
-            $usuario = $empresa->userEnterprises->first()->user;
+        // Obtener el colaborador basado en el ID
+        $colaborador = User::findOrFail($usuario_colaborador_id);
 
-            // Convertir la fecha en formato Y-m-d para comparar con las disponibilidades
-            $fecha = Carbon::parse($fecha);
-            $dia_de_la_semana = $fecha->dayOfWeek; // Obtener el día de la semana (0 para domingo, 6 para sábado)
+        // Convertir la fecha en formato Y-m-d para comparar con las disponibilidades
+        $fecha = Carbon::parse($fecha);
+        $dia_de_la_semana = $fecha->dayOfWeek; // Obtener el día de la semana (0 para domingo, 6 para sábado)
 
-            // Obtener la disponibilidad del usuario para el día seleccionado
-            $disponibilidad = Availability::where('userProf_id', $usuario->id)
-                ->where('day_of_week', $dia_de_la_semana)
-                ->get();
+        // Obtener la disponibilidad del colaborador para el día seleccionado
+        $disponibilidad = Availability::where('userProf_id', $colaborador->id)
+            ->where('day_of_week', $dia_de_la_semana)
+            ->get();
 
-            $duracionCarbon = Carbon::parse($servicio->duration);
-            $duracionServicios = $duracionCarbon->hour * 60 + $duracionCarbon->minute; // Total en minutos
-                 // Asegúrate de usar la variable correcta
-            //dd($duracionServicios);
-            // Obtener los turnos ocupados en la misma fecha
-            $turnosOcupados = Appointment::whereDate('appointment_date', $fecha)
-                ->get(['appointment_date']); // Solo selecciona la columna appointment_date
+        $duracionCarbon = Carbon::parse($servicio->duration);
+        $duracionServicios = $duracionCarbon->hour * 60 + $duracionCarbon->minute; // Total en minutos
 
+        // Obtener los turnos ocupados en la misma fecha
+        $turnosOcupados = Appointment::whereDate('appointment_date', $fecha)
+            ->get(['appointment_date']); // Solo selecciona la columna appointment_date
 
-            // Convertir los turnos ocupados en un formato que sea fácil de comparar
-            $horariosOcupados = [];
-            foreach ($turnosOcupados as $turno) {
-                $startTime = Carbon::parse($turno->appointment_date); // Inicio del turno
-                $endTime = $startTime->copy()->addMinutes($duracionServicios); // Fin del turno
+        // Convertir los turnos ocupados en un formato que sea fácil de comparar
+        $horariosOcupados = [];
+        foreach ($turnosOcupados as $turno) {
+            $startTime = Carbon::parse($turno->appointment_date); // Inicio del turno
+            $endTime = $startTime->copy()->addMinutes($duracionServicios); // Fin del turno
 
-
-                //dd($startTime);
-                //dd($endTime);
-                // Agregar los intervalos ocupados
-                while ($startTime < $endTime) {
-                    $horariosOcupados[] = $startTime->format('H:i');
-                    $startTime->addMinutes(15); // Los turnos ocupados también se verifican en intervalos de 30 minutos
-                }
+            // Agregar los intervalos ocupados
+            while ($startTime < $endTime) {
+                $horariosOcupados[] = $startTime->format('H:i');
+                $startTime->addMinutes(15); // Los turnos ocupados también se verifican en intervalos de 15 minutos
             }
-            //dd($horariosOcupados);
-
-            // Preparar las horas disponibles
-            $horasDisponibles = [];
-            foreach ($disponibilidad as $disponible) {
-                $startTime = Carbon::parse($disponible->start_time);
-                $endTime = Carbon::parse($disponible->end_time);
-
-                while ($startTime < $endTime) {
-                    $hora = $startTime->format('H:i');
-
-                    // Si la hora no está ocupada, la agregamos a las horas disponibles
-                    if (!in_array($hora, $horariosOcupados)) {
-                        $horasDisponibles[] = $hora;
-                    }
-
-                    $startTime->addMinutes(15); // Incrementar en intervalos de 30 minutos
-                }
-            }
-            //dd($servicio, $empresa, $usuario);
-
-            // Asegurarse de que se retorna una respuesta JSON correctamente
-            return response()->json($horasDisponibles);
-        } catch (\Exception $e) {
-            // En caso de error, capturamos el error y lo logueamos
-            return response()->json(['error' => $e->getMessage()], 500); // Incluimos el mensaje de error real para depurar mejor
         }
+
+        // Preparar las horas disponibles
+        $horasDisponibles = [];
+        foreach ($disponibilidad as $disponible) {
+            $startTime = Carbon::parse($disponible->start_time);
+            $endTime = Carbon::parse($disponible->end_time);
+
+            while ($startTime < $endTime) {
+                $hora = $startTime->format('H:i');
+
+                // Si la hora no está ocupada, la agregamos a las horas disponibles
+                if (!in_array($hora, $horariosOcupados)) {
+                    $horasDisponibles[] = $hora;
+                }
+
+                $startTime->addMinutes(15); // Incrementar en intervalos de 15 minutos
+            }
+        }
+
+        // Asegurarse de que se retorna una respuesta JSON correctamente
+        return response()->json($horasDisponibles);
+    } catch (\Exception $e) {
+        // En caso de error, capturamos el error y lo logueamos
+        return response()->json(['error' => $e->getMessage()], 500); // Incluimos el mensaje de error real para depurar mejor
     }
+}
+
 
 
 }
