@@ -1,0 +1,182 @@
+[33mcommit 25063f1ecb5ec90d91d69a7dcfb25833562e8241[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDario[m[33m)[m
+Merge: cce1f5b ea8efe1
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Wed Nov 20 10:00:02 2024 -0300
+
+    Merge branch 'master' into Dario
+    alineacion de ambas ramas
+
+[33mcommit ea8efe1250be9500638209666fb66d8d4e007c23[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Wed Nov 20 09:54:20 2024 -0300
+
+    solucion index empresa
+
+[33mcommit cce1f5bb0ff5b3b3c050a409212469b7e6617445[m[33m ([m[1;31morigin/Dario[m[33m)[m
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Wed Nov 20 09:52:33 2024 -0300
+
+    solucon indexEmpresa
+
+[33mcommit a833e2cdc0ea953e2e500b41fcb6eeff8ab42943[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Wed Nov 20 09:04:04 2024 -0300
+
+    Se agrego metodo getUsuariosPorEmpresa
+
+[33mcommit 18f1f0207ec14b19f5eea41fcb668eda17f37a68[m
+Merge: 61b8b47 374b296
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Wed Nov 20 00:28:26 2024 -0300
+
+    Merge branch 'master' of https://github.com/MatiGanduya/Lab4-TPI-2024
+
+[33mcommit 61b8b47ac7254eb6b062673059fb8ad6ceddda22[m
+Merge: d1ad402 90f642b
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Tue Nov 19 23:04:40 2024 -0300
+
+    Merge branch 'Dario'
+
+[33mcommit 374b296979ccec6bca54fc1493a44dd4e34110f2[m
+Merge: d1ad402 f05e29d
+Author: MatiGanduya <127911019+MatiGanduya@users.noreply.github.com>
+Date:   Tue Nov 19 22:26:38 2024 -0300
+
+    Merge pull request #12 from MatiGanduya/Matias
+    
+    Matias
+
+[33mcommit f05e29d424044faf10dde224664f357961483468[m[33m ([m[1;31morigin/Matias[m[33m)[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Tue Nov 19 22:25:35 2024 -0300
+
+    Modal para ejegir de una lista los colaboradores que van a atender un servicio
+
+[33mcommit 90f642bda61df6fda6f1c88fb8c7970d9007f996[m
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Tue Nov 19 21:40:40 2024 -0300
+
+    colaboradores
+
+[33mcommit db47c490ab40aa411c7f79fc99f20e561ec38f57[m
+Merge: d589a38 d1ad402
+Author: MatiGanduya <127911019+MatiGanduya@users.noreply.github.com>
+Date:   Mon Nov 18 16:57:11 2024 -0300
+
+    Merge pull request #11 from MatiGanduya/master
+    
+    Master
+
+[33mcommit d1ad4021162543c1e5877fd19e154821f865a072[m[33m ([m[1;31morigin/Blas[m[33m)[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Mon Nov 18 16:26:10 2024 -0300
+
+    intervalos de 15 minutos al elegir servicios
+
+[33mcommit 98bba50589d4ae7112d3a081b270224655705cbb[m
+Merge: ec50c0a d589a38
+Author: MatiGanduya <127911019+MatiGanduya@users.noreply.github.com>
+Date:   Mon Nov 18 00:25:31 2024 -0300
+
+    Merge pull request #10 from MatiGanduya/Matias
+    
+    Matias
+
+[33mcommit d589a38197ebd22aa28ca5f1cb452333c190fecd[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Sun Nov 17 22:38:14 2024 -0300
+
+    Cambio de intervalos de 15 minutos cuando se elije un dia del calendario
+
+[33mcommit 0f6d0273df2c00bb8b7aeae8363e931b11fdb398[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Sun Nov 17 21:48:16 2024 -0300
+
+    Ahora cuando tocas un dia en el calendario solamente te trae los horarios disponibles
+
+[33mcommit ec50c0a282953968b2c0257095bab74464122894[m
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Sun Nov 17 20:32:16 2024 -0300
+
+    agregar colaborador
+
+[33mcommit 06437fdc3ebc1654908b9fab87ca6d6b2e3ed4f7[m[33m ([m[1;32mMatias[m[33m)[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Wed Nov 13 17:38:18 2024 -0300
+
+    Boton para cancelar turno
+
+[33mcommit 286fb158bc085990033c6408c7921d33839a3ce0[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Tue Nov 12 21:59:20 2024 -0300
+
+    Se guardan correctamente los turnos, creacion de la vista donde se ven los turnos, todavia faltan alguans correcciones
+
+[33mcommit 462fbf21c6684b50d4de25f2bfa6e40fe3c12158[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Sun Nov 10 20:46:05 2024 -0300
+
+    Ahora muestra los horarios disponibles de acuerdo al dia
+
+[33mcommit edb6e37a2d7f3e0311c9713c00366cee30d74506[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Sun Nov 10 10:49:34 2024 -0300
+
+    Creacion de la vista donde se muestra el calendario, no se esta pudiendo mostrar los horarios disponibles
+
+[33mcommit aab83cb2098fc53b37c87f8cd42a161ced7e1ed4[m
+Author: Matias Ganduya <matiasganduya@gmail.com>
+Date:   Tue Nov 5 12:29:49 2024 -0300
+
+    Mejoras en la vista de empresa y crear servicios
+
+[33mcommit 2a49c0d7426708d2c95887ab52040349a7522025[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Mon Oct 28 02:10:19 2024 -0300
+
+    Verificacion de usuarios
+
+[33mcommit bfc3390269d30f135a0a1237c1316a043cf30999[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Mon Oct 28 02:01:19 2024 -0300
+
+    Agrego el campo descripcion a indexEmpresa
+
+[33mcommit b09a3de223090d739364ea5c58a3eddb5ac164e5[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Mon Oct 28 01:13:48 2024 -0300
+
+    Correccion de errores
+
+[33mcommit 0f064c8c7a91ea719abed315667594e270069c78[m
+Merge: 8923e1e a9656e6
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Sat Oct 26 14:02:13 2024 -0300
+
+    Merge branch 'master' of https://github.com/MatiGanduya/Lab4-TPI-2024 into Blas
+
+[33mcommit 8923e1e8096679f1b3f2dda55d964d6072e992f7[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Fri Oct 25 22:33:28 2024 -0300
+
+    Cambios en la vista de empresas y servicos
+
+[33mcommit a9656e60b654ba6004c06361b665f0ede4c9e75c[m
+Author: darioBD <dario.d.monte.d.o@gmail>
+Date:   Fri Oct 25 21:52:21 2024 -0300
+
+    disponibilidad
+
+[33mcommit 7f83491c0a088b0752506700a07c8b1b7003ba68[m
+Merge: 50d3e33 12a1002
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Thu Oct 24 15:28:12 2024 -0300
+
+    Merge remote-tracking branch 'origin/Blas'
+
+[33mcommit 12a10028e10ea6709e79650c36a3742af43b2b5e[m
+Author: Blas Cabrera <blascabrera78@gmail.com>
+Date:   Thu Oct 24 15:23:57 2024 -0300
+
+    ...

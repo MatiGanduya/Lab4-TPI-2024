@@ -13,8 +13,8 @@
                         {{ !$empresa ? 'disabled' : '' }}
                         style="{{ !$empresa ? 'opacity: 0.5;' : '' }}"
                         data-bs-toggle="modal"
-                        data-bs-target="#addCollaboratorModal">
-                        Agregar Colaborador
+                        data-bs-target="#manageCollaboratorsModal">
+                        Colaboradores
                     </button>
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
@@ -187,32 +187,6 @@
 
 <!-- Scripts para manejar la lógica de los modales -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const durationSelect = document.getElementById('serviceDuration');
-        const maxMinutes = 24 * 60; // 24 horas en minutos
-        const interval = 15; // Intervalo de 15 minutos
-
-        for (let minutes = interval; minutes <= maxMinutes; minutes += interval) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            let optionText = '';
-
-            if (hours > 0) {
-                optionText += `${hours} hora${hours > 1 ? 's' : ''}`;
-            }
-            if (mins > 0) {
-                optionText += ` ${mins} minuto${mins > 1 ? 's' : ''}`;
-            }
-
-            const option = document.createElement('option');
-            option.value = `${hours}:${mins < 10 ? '0' + mins : mins}`;
-            option.textContent = optionText.trim();
-            durationSelect.appendChild(option);
-        }
-    });
-</script>
-
-<script>
     // Mostrar el modal para editar un servicio
     document.querySelectorAll('.service-card').forEach(function(card) {
         card.addEventListener('click', function() {
@@ -268,33 +242,138 @@
 });
 </script>
 <!-- Modal para agregar colaborador -->
-<div class="modal fade" id="addCollaboratorModal" tabindex="-1" aria-labelledby="addCollaboratorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="manageCollaboratorsModal" tabindex="-1" aria-labelledby="manageCollaboratorsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="{{ route('colaborador.agregar') }}" method="POST" id="addCollaboratorForm">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCollaboratorModalLabel">Agregar Colaborador</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="user_id">Seleccionar Usuario</label>
-                        <select class="form-control" id="user_id" name="user_id" required>
-                            <option value="">-- Seleccionar Usuario --</option>
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageCollaboratorsModalLabel">Gestionar Colaboradores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para agregar colaborador -->
+                <form id="addCollaboratorForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="user_id" class="form-label">Seleccionar Cliente</label>
+                        <select class="form-select" id="user_id" name="user_id" required>
+                            <option value="" disabled selected>Selecciona un cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Agregar</button>
-                </div>
-            </form>
+                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
+                    <button type="submit" class="btn btn-primary">Agregar Colaborador</button>
+                </form>
+                <hr>
+                <!-- Tabla para listar colaboradores -->
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                <h6>Lista de Colaboradores</h6>
+                <table class="table table-bordered" id="collaboratorsTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($collaborators as $colaborador)
+                            <tr>
+                                <td>{{ $colaborador->name }}</td>
+                                <td>{{ $colaborador->email }}</td>
+                                <td>
+                                    <form action="{{ route('deleteCollaborator') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="user_id" value="{{ $colaborador->id }}">
+                                        <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Scripts para manejar la lógica de los modales -->
+<script>
+    // Mostrar el modal para editar un servicio
+    document.getElementById('addCollaboratorForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Evita el envío normal del formulario
+
+    const formData = new FormData(this); // Recoge los datos del formulario
+
+    fetch("{{ route('addCollaborator') }}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest", // Indica que es una solicitud AJAX
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message); // Muestra el mensaje
+                location.reload(); // Recarga la página para asegurar que todo esté actualizado
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al agregar el colaborador.');
+        });
+
+
+    });
+
+        // Evento para eliminar colaborador
+        document.querySelectorAll('.delete-collaborator-form').forEach(form => {
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault(); // Detener el envío tradicional del formulario
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error('Error en la solicitud');
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message); // Mostrar mensaje de éxito
+                const userId = formData.get('user_id');
+                const row = document.getElementById(`row-${userId}`);
+                if (row) row.remove(); // Eliminar la fila de la tabla
+            } else {
+                alert(data.message); // Mostrar mensaje de error
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al eliminar el colaborador.');
+        }
+    })
+    });
+</script>
 @endsection
