@@ -105,7 +105,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -185,7 +184,34 @@
     </div>
 </div>
 
+<<<<<<<<< Temporary merge branch 1
 <!-- Scripts para manejar la lógica de los modales -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const durationSelect = document.getElementById('serviceDuration');
+        const maxMinutes = 24 * 60; // 24 horas en minutos
+        const interval = 15; // Intervalo de 15 minutos
+
+        for (let minutes = interval; minutes <= maxMinutes; minutes += interval) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            let optionText = '';
+
+            if (hours > 0) {
+                optionText += `${hours} hora${hours > 1 ? 's' : ''}`;
+            }
+            if (mins > 0) {
+                optionText += ` ${mins} minuto${mins > 1 ? 's' : ''}`;
+            }
+
+            const option = document.createElement('option');
+            option.value = `${hours}:${mins < 10 ? '0' + mins : mins}`;
+            option.textContent = optionText.trim();
+            durationSelect.appendChild(option);
+        }
+    });
+</script>
+
 <script>
     // Mostrar el modal para editar un servicio
     document.querySelectorAll('.service-card').forEach(function(card) {
@@ -241,6 +267,8 @@
         .catch(error => console.error('Error:', error));
 });
 </script>
+=========
+>>>>>>>>> Temporary merge branch 2
 <!-- Modal para agregar colaborador -->
 <div class="modal fade" id="manageCollaboratorsModal" tabindex="-1" aria-labelledby="manageCollaboratorsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -311,11 +339,73 @@
 
 <!-- Scripts para manejar la lógica de los modales -->
 <script>
-    // Mostrar el modal para editar un servicio
-    document.getElementById('addCollaboratorForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Evita el envío normal del formulario
+    // servicio
+    document.addEventListener('DOMContentLoaded', function() {
+        const durationSelect = document.getElementById('serviceDuration');
+        const maxMinutes = 24 * 60; // 24 horas en minutos
+        const interval = 15; // Intervalo de 15 minutos
 
-    const formData = new FormData(this); // Recoge los datos del formulario
+        for (let minutes = interval; minutes <= maxMinutes; minutes += interval) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            let optionText = '';
+
+            if (hours > 0) {
+                optionText += `${hours} hora${hours > 1 ? 's' : ''}`;
+            }
+            if (mins > 0) {
+                optionText += ` ${mins} minuto${mins > 1 ? 's' : ''}`;
+            }
+
+            const option = document.createElement('option');
+            option.value = `${hours}:${mins < 10 ? '0' + mins : mins}`;
+            option.textContent = optionText.trim();
+            durationSelect.appendChild(option);
+        }
+    });
+</script>
+
+<script>
+    // Mostrar el modal para editar un servicio
+    document.querySelectorAll('.service-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+            const id = this.getAttribute('data-id'); // ID del servicio
+            const name = this.getAttribute('data-name'); // Nombre del servicio
+            const description = this.getAttribute('data-description'); // Descripción del servicio
+            const price = this.getAttribute('data-price'); // Precio del servicio
+            const duration = this.getAttribute('data-duration'); // Duración del servicio
+
+            // Asignar los valores al formulario de edición
+            document.getElementById('editServiceId').value = id;
+            document.getElementById('editServiceName').value = name;
+            document.getElementById('editServiceDescription').value = description;
+            document.getElementById('editServicePrice').value = price;
+            document.getElementById('editServiceDuration').value = duration;
+
+            $('#editServiceModal').modal('show');
+        });
+    });
+
+    // Manejador para habilitar el formulario de empresa
+    document.getElementById('editEmpresa').addEventListener('click', function() {
+        document.getElementById('nombre').disabled = false;
+        document.getElementById('descripcion').disabled = false;
+        document.getElementById('direccion').disabled = false;
+        document.getElementById('saveEmpresa').style.display = 'block';
+    });
+
+    document.getElementById('addServiceButton').addEventListener('click', function() {
+    var myModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+    myModal.show();
+});
+</script>
+
+<script>
+    // Agregar un colaborador
+    document.getElementById('addCollaboratorForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Evita el envío normal del formulario
+
+        const formData = new FormData(this); // Recoge los datos del formulario
 
     fetch("{{ route('addCollaborator') }}", {
         method: "POST",
@@ -339,27 +429,27 @@
         });
 
 
-    });
+
 
         // Evento para eliminar colaborador
         document.querySelectorAll('.delete-collaborator-form').forEach(form => {
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault(); // Detener el envío tradicional del formulario
+            form.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Detener el envío tradicional del formulario
 
-        const formData = new FormData(this);
+            const formData = new FormData(this);
 
-        try {
-            const response = await fetch(this.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: formData,
-            });
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: formData,
+                });
 
-            if (!response.ok) throw new Error('Error en la solicitud');
+                if (!response.ok) throw new Error('Error en la solicitud');
 
-            const data = await response.json();
+                const data = await response.json();
 
             if (data.success) {
                 alert(data.message); // Mostrar mensaje de éxito
@@ -373,7 +463,12 @@
             console.error('Error:', error);
             alert('Hubo un error al eliminar el colaborador.');
         }
-    })
+    });
+});
+
+
+
+
     });
 </script>
 @endsection

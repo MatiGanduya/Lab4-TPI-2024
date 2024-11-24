@@ -50,7 +50,15 @@
                             <td>{{ $servicio->description }}</td>
                             <td>${{ number_format($servicio->price, 2) }}</td>
                             <td>{{ $servicio->duration }}</td>
-                            <td><a href="{{ route('turnos.seleccionFechaHora', ['servicio_id' => $servicio->id]) }}" class="btn btn-outline-primary">Solicitar turno</a></td>
+                            <td>
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalColaboradores"
+                                        data-servicio-id="{{ $servicio->id }}"
+                                        data-empresa-id="{{ $empresaSeleccionada->id }}">
+                                        Solicitar turno
+                                </button>
+
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -61,4 +69,93 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para Colaboradores -->
+<div class="modal fade" id="modalColaboradores" tabindex="-1" aria-labelledby="modalColaboradoresLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalColaboradoresLabel">Colaboradores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Aquí puedes incluir información adicional sobre los colaboradores o el servicio seleccionado.</p>
+                <!-- Puedes cargar colaboradores dinámicamente con JavaScript o backend -->
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a href="#" id="confirmTurno" class="btn btn-primary">Confirmar turno</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalColaboradores = document.getElementById('modalColaboradores');
+        const modalBody = modalColaboradores.querySelector('.modal-body');
+        let selectedColaborador = null;
+        let servicioId = ""; // Inicializamos como vacío
+
+        modalColaboradores.addEventListener('show.bs.modal', (event) => {
+            const button = event.relatedTarget;
+            const empresaId = button.getAttribute('data-empresa-id');
+            servicioId = button.getAttribute('data-servicio-id'); // Asignamos el servicio_id cuando se hace clic en "Solicitar turno"
+            modalBody.innerHTML = '<p>Cargando colaboradores...</p>'; // Placeholder mientras se cargan los datos
+
+            // Cargar los colaboradores de la empresa
+            fetch(`/colaboradores/${empresaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        // Crear una lista de colaboradores con opción para seleccionar
+                        const list = data.map(colaborador => {
+                            return `
+                                <div class="colaborador-item" data-id="${colaborador.id}" data-name="${colaborador.name}">
+                                    <button class="btn btn-outline-primary" style="width: 100%">${colaborador.name}</button>
+                                </div>
+                            `;
+                        }).join('');
+                        modalBody.innerHTML = list;
+
+                        // Añadir evento de selección a cada colaborador
+                        const colaboradorItems = modalBody.querySelectorAll('.colaborador-item');
+                        colaboradorItems.forEach(item => {
+                            item.addEventListener('click', () => {
+                                // Marcar al colaborador como seleccionado
+                                if (selectedColaborador) {
+                                    selectedColaborador.classList.remove('selected');
+                                }
+                                selectedColaborador = item;
+                                selectedColaborador.classList.add('selected'); // Resaltar el seleccionado
+                                const colaboradorName = item.getAttribute('data-name');
+                                const colaboradorId = item.getAttribute('data-id');
+                                document.getElementById('confirmTurno').setAttribute('data-colaborador-id', colaboradorId);
+                                document.getElementById('confirmTurno').textContent = `Confirmar turno con ${colaboradorName}`;
+
+                                // Cambiar el comportamiento del botón para redirigir
+                                document.getElementById('confirmTurno').addEventListener('click', () => {
+                                    if (servicioId && colaboradorId) {
+                                        // Redirigir a la ruta seleccionada con los parámetros servicio_id y usuario_colaborador_id
+                                        window.location.href = `/turnos/seleccion-fecha-hora/${servicioId}/${colaboradorId}`;
+                                    } else {
+                                        alert('Por favor selecciona un servicio y colaborador.');
+                                    }
+                                });
+                            });
+                        });
+                    } else {
+                        modalBody.innerHTML = '<p>No hay colaboradores disponibles.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar los colaboradores:', error);
+                    modalBody.innerHTML = '<p>Error al cargar los colaboradores.</p>';
+                });
+        });
+    });
+</script>
+
+
 @endsection
