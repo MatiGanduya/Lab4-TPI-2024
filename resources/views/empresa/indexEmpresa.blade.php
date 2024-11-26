@@ -204,13 +204,7 @@
                         <select class="form-select" id="user_id" name="user_id" required>
                             <option value="" disabled selected>Selecciona un cliente</option>
                             @foreach ($clientes as $cliente)
-                            <option
-                                value="{{ $cliente->id }}"
-                                @if(is_null($cliente->name) || is_null($cliente->email)) disabled @endif
-                                >
-                                {{ $cliente->name ?? 'Nombre no disponible' }}
-                                ({{ $cliente->email ?? 'Correo no disponible' }})
-                            </option>
+                            <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -219,6 +213,17 @@
                 </form>
                 <hr>
                 <!-- Tabla para listar colaboradores -->
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
                 <h6>Lista de Colaboradores</h6>
                 <table class="table table-bordered" id="collaboratorsTable">
                     <thead>
@@ -229,25 +234,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (isset($colaboradores) && $colaboradores->count() > 0)
-                        @foreach ($colaboradores as $colaborador)
-                        <tr id="row-{{ $colaborador->id }}">
-                            <td>{{ $colaborador->name ?? 'Nombre no disponible' }}</td>
-                            <td>{{ $colaborador->email ?? 'Correo no disponible' }}</td>
-                            <td>
-                                <form action="{{ route('deleteCollaborator') }}" method="POST" class="delete-collaborator-form">
-                                    @csrf
-                                    <input type="hidden" name="user_id" value="{{ $colaborador->id }}">
-                                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
+                        @if (!empty($clientes) && $clientes->isNotEmpty())
+                        @foreach ($clientes as $cliente)
+                        <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
                         @endforeach
                         @else
-                        <tr>
-                            <td colspan="3" class="text-center">No hay colaboradores asociados a esta empresa.</td>
-                        </tr>
+                        <option value="" disabled>No hay clientes disponibles</option>
                         @endif
                     </tbody>
                 </table>
