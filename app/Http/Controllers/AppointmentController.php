@@ -65,4 +65,40 @@ class AppointmentController extends Controller
 
         return redirect()->route('turnos.indexTurnos')->with('success', 'Turno cancelado exitosamente');
     }
+
+    public function getSolicitudes()
+    {
+        // Obtener todas las solicitudes relacionadas al usuario autenticado
+        $solicitudes = Appointment::with(['service', 'service.enterprise'])
+                        ->where('userProf_id', Auth::id()) // Filtrar solo las solicitudes del profesional autenticado
+                        ->get()
+                        ->map(function ($solicitud) {
+                            $solicitud->formatted_date = Carbon::parse($solicitud->appointment_date)->format('d/m/Y H:i');
+                            return $solicitud;
+                        });
+
+        // Retornar todas las solicitudes a la vista
+        return view('solicitudes.index', compact('solicitudes'));
+    }
+
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:confirmed,cancelled',
+        ]);
+
+        // Obtener la solicitud por ID y asegurar que pertenece al usuario autenticado
+        $solicitud = Appointment::where('id', $id)
+                        ->where('userProf_id', Auth::id())
+                        ->firstOrFail();
+
+        // Actualizar el estado
+        $solicitud->status = $request->status;
+        $solicitud->save();
+
+        return redirect()->route('solicitudes.turnos')->with('success', 'Estado de la solicitud actualizado correctamente');
+    }
+
+
 }

@@ -39,6 +39,10 @@
                             @csrf
                             <button type="submit" class="btn btn-outline-light me-2">Logout</button>
                         </form>
+
+                        <!-- Nuevo botón para "Solicitudes de Turnos" -->
+                        <a href="{{ route('solicitudes.turnos') }}" class="btn btn-outline-light me-2">Solicitudes de Turnos</a>
+
                     @else
                         <!-- Botones de Login y Sign-up si el usuario no está autenticado -->
                         <a href="{{ route('login') }}" class="btn btn-outline-light me-2">Login</a>

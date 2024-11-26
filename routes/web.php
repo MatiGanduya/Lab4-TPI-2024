@@ -58,6 +58,11 @@ Route::post('/turnos/confirmar/{servicio_id}', [AppointmentController::class, 's
 Route::get('/disponibilidad/horarios/{dia}', [DisponibilidadController::class, 'horarios']);
 
 Route::delete('/turnos/cancel/{id}', [AppointmentController::class, 'cancel'])->name('turnos.cancel');
+
+Route::get('/solicitudes-turnos', [AppointmentController::class, 'getSolicitudes'])->name('solicitudes.turnos');
+Route::patch('/solicitudes-turnos/{id}', [AppointmentController::class, 'updateStatus'])->name('solicitudes.updateStatus');
+
+
 });
 
 require __DIR__.'/auth.php';
