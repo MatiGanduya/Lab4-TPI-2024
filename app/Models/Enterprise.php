@@ -14,6 +14,12 @@ class enterprise extends Model
         'description',
         'location_id',
     ];
+        // Relación con los usuarios a través de la tabla intermedia
+        public function users()
+        {
+            return $this->belongsToMany(User::class, 'user_enterprises')
+                        ->withPivot('user_type'); // Si usas un campo extra en la tabla pivote
+        }
 
     public function users()
     {

@@ -132,7 +132,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -229,6 +228,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
             </div>
         </div>
     </div>
@@ -237,5 +237,32 @@
 <div id="dataContainer1" data-url="{{ route('colaborador.agregar') }}"></div>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: formData,
+                });
 
+                if (!response.ok) throw new Error('Error en la solicitud');
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message); // Mostrar mensaje de éxito
+                    const userId = formData.get('user_id');
+                    const row = document.getElementById(`row-${userId}`);
+                    if (row) row.remove(); // Eliminar la fila de la tabla
+                } else {
+                    alert(data.message); // Mostrar mensaje de error
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al eliminar el colaborador.');
+            }
+            });
+        });
+</script>
 @endsection
