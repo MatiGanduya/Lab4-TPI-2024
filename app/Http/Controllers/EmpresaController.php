@@ -23,18 +23,17 @@ class EmpresaController extends Controller
 
     public function guardar(Request $request)
     {
-
-        $usuario = Auth::user(); 
         $usuario = Auth::user();
-
-        if (!$usuario instanceof User || $usuario->user_type === 'employee') {
+    
+        // Verificar si el usuario tiene permisos para guardar/editar empresas
+        if (!$usuario || $usuario->user_type !== 'admin') {
             return redirect()->back()->with('error', 'No tiene permisos para guardar o editar empresas.');
         }
+    
         $request->validate([
             'id' => 'nullable|exists:enterprises,id',
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:500', 
             'descripcion' => 'nullable|string|max:500',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
@@ -43,64 +42,47 @@ class EmpresaController extends Controller
             'city' => 'required|string|max:255',
             'postalCode' => 'required|string|max:10',
         ]);
-
-        if (!$usuario instanceof User) {
-            return redirect()->back()->with('error', 'Usuario no autenticado o inválido.');
-        }
+    
         $enterprise = Enterprise::find($request->input('id'));
     
         if ($enterprise) {
+            // Actualizar empresa existente
             $enterprise->name = $request->input('nombre');
-            $enterprise->description = $request->input('descripcion'); // Guardar descripción
+            $enterprise->description = $request->input('descripcion');
             $enterprise->save();
     
+            // Actualizar ubicación
             if ($enterprise->location) {
-                $enterprise->location->address = $request->input('direccion');
-                $enterprise->location->country = $request->input('country');
-                $enterprise->location->province = $request->input('state');
-                $enterprise->location->city = $request->input('city');
-                $enterprise->location->postal_code = $request->input('postalCode');
-                $enterprise->location->latitude = $request->input('latitude');
-                $enterprise->location->longitude = $request->input('longitude');
-                $enterprise->location->save();
+                $enterprise->location->update([
+                    'address' => $request->input('direccion'),
+                    'country' => $request->input('country'),
+                    'province' => $request->input('state'),
+                    'city' => $request->input('city'),
+                    'postal_code' => $request->input('postalCode'),
+                    'latitude' => $request->input('latitude'),
+                    'longitude' => $request->input('longitude'),
+                ]);
             }
         } else {
-            $location = new Location();
-            $location->country = $request->country;
-            $location->province = $request->state;
-            $location->city = $request->city;
-            $location->address = $request->direccion;
-            $location->postal_code = $request->postalCode;
-            $location->latitude = $request->latitude;
-            $location->longitude = $request->longitude;
-            $location->save();
+            // Crear una nueva empresa
+            $location = Location::create([
+                'country' => $request->input('country'),
+                'province' => $request->input('state'),
+                'city' => $request->input('city'),
+                'address' => $request->input('direccion'),
+                'postal_code' => $request->input('postalCode'),
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude'),
+            ]);
     
-            $enterprise = new Enterprise();
-            $enterprise->name = $request->nombre;
-            $enterprise->description = $request->descripcion; 
-            $enterprise->description = $request->descripcion;
-            $enterprise->location_id = $location->id;
-            $enterprise->owner_id = Auth::id();
-            $enterprise->save();
+            $enterprise = Enterprise::create([
+                'name' => $request->input('nombre'),
+                'description' => $request->input('descripcion'),
+                'location_id' => $location->id,
+                'owner_id' => $usuario->id,
+            ]);
         }
-
-        User_enterprise::updateOrCreate(
-            ['user_id' => Auth::id(), 'enterprise_id' => $enterprise->id],
-            ['user_type' => 'admin']
-        );
-
-
-        $usuario->user_type = 'admin';
-
     
-        if ($usuario->user_type !== null) {
-            $usuario->save(); 
-            $usuario->save();
-        } else {
-            return redirect()->back()->with('error', 'El tipo de usuario no puede ser nulo.');
-        }
-
-
         return redirect()->back()->with('success', 'Empresa guardada correctamente.');
     }
 
@@ -142,16 +124,15 @@ class EmpresaController extends Controller
     public function gestionarColaboradores($enterpriseId)
     {
         $empresa = Enterprise::findOrFail($enterpriseId);
-    
-        // Obtener colaboradores relacionados con la empresa
-        $colaboradores = $empresa->users()->whereNotNull('name')->get();
+        
+        // Obtener todos los colaboradores (empleados) asociados a la empresa
+        $colaboradores = $empresa->users()->where('user_enterprise.user_type', 'employee')->get();
     
         return view('ruta_de_tu_vista', [
             'empresa' => $empresa,
             'colaboradores' => $colaboradores,
         ]);
     }
-    
     
 }
 

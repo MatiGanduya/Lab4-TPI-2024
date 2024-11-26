@@ -9,16 +9,18 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
                     <!-- Botón en la tarjeta "Mi Empresa" -->
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#manageCollaboratorsModal"
-                        {{ !$empresa ? 'disabled' : '' }}
-                        style="{{ !$empresa ? 'opacity: 0.5;' : '' }}"
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
                         data-bs-toggle="modal"
-                        data-bs-target="#addCollaboratorModal">
+                        data-bs-target="#manageCollaboratorsModal"
+                        {{ !$empresa ? 'disabled' : '' }}
+                        style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">
                         Colaboradores
                     </button>
+                    @if(auth()->user()->user_type === 'admin')
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
                     </button>
+                    @endif
                 </div>
                 <div class="card-body">
 
@@ -247,7 +249,6 @@
                             <td colspan="3" class="text-center">No hay colaboradores asociados a esta empresa.</td>
                         </tr>
                         @endif
-
                     </tbody>
                 </table>
             </div>
@@ -258,13 +259,12 @@
 
 <!-- Scripts para manejar la lógica de los modales -->
 <script>
-    // Mostrar el modal para editar un servicio
     document.getElementById('addCollaboratorForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Evita el envío normal del formulario
 
         const formData = new FormData(this); // Recoge los datos del formulario
 
-        fetch("{{ route('addCollaborator') }}", {
+        fetch("{{ route('colaborador.agregar') }}", { // Usar la ruta definida en web.php
                 method: "POST",
                 body: formData,
                 headers: {
@@ -284,8 +284,6 @@
                 console.error('Error:', error);
                 alert('Hubo un error al agregar el colaborador.');
             });
-
-
     });
 
     // Evento para eliminar colaborador

@@ -39,8 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/mis-turnos', [AppointmentController::class, 'index'])->name('turnos.index');
     Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
     Route::post('/colaborador/agregar', [EmpresaController::class, 'agregarColaborador'])->name('colaborador.agregar');
-    Route::post('/agregar-colaborador', [EmpresaController::class, 'agregarColaborador'])->name('agregarColaborador');
-    Route::post('/add-collaborator', [EmpresaController::class, 'addCollaborator'])->name('addCollaborator');
+    Route::post('/empresa/agregarColaborador', [EmpresaController::class, 'agregarColaborador']);
     Route::post('/remove-collaborator', [EmpresaController::class, 'removeCollaborator'])->name('removeCollaborator');
 
 
