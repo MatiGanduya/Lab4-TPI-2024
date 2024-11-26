@@ -157,60 +157,56 @@ class EmpresaController extends Controller
 
     public function getUsuariosPorEmpresa($empresa_id)
     {
-
-        try {
-            // Depurar el ID de la empresa
-            \Log::info("Empresa ID recibido: {$empresa_id}");
-
-            // Buscar usuarios relacionados con la empresa
-            $usuarios = User::whereHas('enterprises', function ($query) use ($empresa_id) {
-                $query->where('enterprises.id', $empresa_id);
-            })->get();
-
-            // Depurar los usuarios encontrados
-            \Log::info("Usuarios encontrados: ", $usuarios->toArray());
-
-            // Si no se encuentran usuarios, devolver un mensaje apropiado
-            if ($usuarios->isEmpty()) {
-                return response()->json(['message' => 'No se encontraron usuarios para esta empresa.'], 404);
-            }
-
-            // Devolver los usuarios como JSON
-            return response()->json($usuarios);
-
-        } catch (\Exception $e) {
-            // Capturar errores y mostrar el mensaje
-            \Log::error("Error al obtener usuarios: " . $e->getMessage());
-            return response()->json(['error' => 'Ocurrió un error: ' . $e->getMessage()], 500);
-        }
-    }
-
-    public function usuariosNoAsignados(Request $request)
-    {
-        // Obtener los usuarios que no están asociados a ninguna empresa
-        $usuarios = User::whereDoesntHave('enterprises')->get();
-
-        // Puedes paginar si lo prefieres
-        // $usuarios = User::whereDoesntHave('enterprises')->paginate(10);
-
+        // Buscar usuarios relacionados con la empresa
+        $usuarios = User::whereHas('enterprises', function ($query) use ($empresa_id) {
+            $query->where('enterprises.id', $empresa_id);  // Asegúrate de que 'enterprises.id' está correcto
+        })->get();
+        //dd($usuarios);
+        // Devolver los usuarios como JSON
         return response()->json($usuarios);
     }
 
-    public function eliminar(Enterprise $empresa, User $usuario)
+    // Muestra los colaboradores de una empresa
+    public function getCollaborators($enterpriseId)
     {
-        try {
+        $collaborators = DB::table('users_enterprise')
+            ->join('users', 'users.id', '=', 'users_enterprise.user_id')
+            ->where('users_enterprise.enterprise_id', $enterpriseId)
+            ->where('users_enterprise.user_type', 'collaborator')
+            ->select('users.id', 'users.name', 'users.email')
+            ->get();
 
+        return view('manage_collaborators', compact('collaborators', 'enterpriseId'));
+    }
 
-            // Eliminar la relación entre el usuario y la empresa
-            $empresa->users()->detach($usuario->id);
+    public function deleteCollaborator(Request $request)
+    {
+        $enterpriseId = $request->input('enterprise_id');
+        $userId = $request->input('user_id');
 
-            return response()->json(['message' => 'Colaborador eliminado correctamente.']);
-        } catch (\Exception $e) {
-            // Registrar el error para depuración
-            Log::error('Error al eliminar colaborador: ' . $e->getMessage());
-            return response()->json(['error' => 'Hubo un error al procesar la solicitud.'], 500);
+        $relation = DB::table('user_enterprises')
+            ->where('user_id', $userId)
+            ->where('enterprise_id', $enterpriseId)
+            ->where('user_type', 'employee')
+            ->first();
+
+        if ($relation) {
+            // Eliminar la relación en la tabla user_enterprises
+            DB::table('user_enterprises')
+                ->where('user_id', $userId)
+                ->where('enterprise_id', $enterpriseId)
+                ->delete();
+
+            // Cambiar el tipo de usuario a cliente
+            $user = User::find($userId);
+            $user->user_type = 'client';
+            $user->save();
+
+            // Redirigir con un mensaje de éxito
+            return redirect()->back()->with('success', 'Colaborador eliminado correctamente.');
         }
 
+        return redirect()->back()->with('error', 'El colaborador no se encontró o no pertenece a esta empresa.');
     }
 
 
