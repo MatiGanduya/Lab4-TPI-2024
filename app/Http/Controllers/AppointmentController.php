@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Service;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,36 +26,38 @@ class AppointmentController extends Controller
     }
 
 
-    public function store(Request $request, $servicio_id)
-    {
-        // Validar los datos
-        $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required',
-        ]);
+    public function store(Request $request, $servicio_id, $usuario_colaborador_id)
+{
+    // Validar los datos
+    $request->validate([
+        'fecha' => 'required|date',
+        'hora' => 'required',
+    ]);
 
-        // Combinar la fecha y la hora en un solo campo de fecha y hora
-        $appointmentDate = Carbon::parse("{$request->fecha} {$request->hora}");
+    // Combinar la fecha y la hora en un solo campo de fecha y hora
+    $appointmentDate = Carbon::parse("{$request->fecha} {$request->hora}");
 
-        // Obtener el servicio por su ID
-        $servicio = Service::findOrFail($servicio_id);
+    // Obtener el servicio por su ID
+    $servicio = Service::findOrFail($servicio_id);
 
-        // Obtener la empresa asociada al servicio
-        $empresa = $servicio->enterprise;
+    // Obtener la empresa asociada al servicio
+    $empresa = $servicio->enterprise;
 
-        $usuarioProfesional = $empresa->userEnterprises->first()->user;
+    // Obtener al colaborador por su ID
+    $colaborador = User::findOrFail($usuario_colaborador_id);
 
-        Appointment::create([
-            'appointment_date' => $appointmentDate,
-            'status' => 'pending',
-            'user_id' => auth()->id(),
-            'userProf_id' => $usuarioProfesional->id,
-            'service_id' => $servicio_id,
-        ]);
+    Appointment::create([
+        'appointment_date' => $appointmentDate,
+        'status' => 'pending',
+        'user_id' => auth()->id(),
+        'userProf_id' => $colaborador->id, // Asociar el colaborador seleccionado
+        'service_id' => $servicio_id,
+    ]);
 
-        // Redirigir o retornar una respuesta
-        return redirect()->route('turnos.indexTurnos')->with('success', 'Turno confirmado exitosamente');
-    }
+    // Redirigir o retornar una respuesta
+    return redirect()->route('turnos.indexTurnos')->with('success', 'Turno confirmado exitosamente');
+}
+
 
     public function cancel($id)
     {

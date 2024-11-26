@@ -53,7 +53,7 @@ Route::get('/turnos/seleccion-fecha-hora/{servicio_id}/{usuario_colaborador_id}'
 Route::get('/turnos/seleccion/{servicio_id}/{usuario_colaborador_id}/{fecha}', [TurnosController::class, 'mostrarDisponibilidad'])->name('turnos.mostrarDisponibilidad');
 
 
-Route::post('/turnos/confirmar/{servicio_id}', [AppointmentController::class, 'store'])->name('turnos.confirmar');
+Route::post('/turnos/confirmar/{servicio_id}/{usuario_colaborador_id}', [AppointmentController::class, 'store'])->name('turnos.confirmar');
 
 Route::get('/disponibilidad/horarios/{dia}', [DisponibilidadController::class, 'horarios']);
 
