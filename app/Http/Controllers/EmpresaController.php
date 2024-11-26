@@ -14,14 +14,18 @@ class EmpresaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $empresa = $user->enterprises->first();
-        return view('empresa.indexEmpresa', compact('empresa'));
+        $empresa = $user->enterprises->first(); // Obtén la primera empresa asociada al usuario
+        $clientes = User::where('user_type', 'client')->get(); // Usuarios tipo cliente
+    
+        // Retorna ambas variables a la vista
+        return view('empresa.indexEmpresa', compact('empresa', 'clientes'));
     }
 
     public function guardar(Request $request)
     {
 
         $usuario = Auth::user(); 
+        $usuario = Auth::user();
 
         if (!$usuario instanceof User || $usuario->user_type === 'employee') {
             return redirect()->back()->with('error', 'No tiene permisos para guardar o editar empresas.');
@@ -31,6 +35,7 @@ class EmpresaController extends Controller
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:500', 
+            'descripcion' => 'nullable|string|max:500',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'country' => 'required|string|max:255',
@@ -73,6 +78,7 @@ class EmpresaController extends Controller
             $enterprise = new Enterprise();
             $enterprise->name = $request->nombre;
             $enterprise->description = $request->descripcion; 
+            $enterprise->description = $request->descripcion;
             $enterprise->location_id = $location->id;
             $enterprise->owner_id = Auth::id();
             $enterprise->save();
@@ -89,6 +95,7 @@ class EmpresaController extends Controller
     
         if ($usuario->user_type !== null) {
             $usuario->save(); 
+            $usuario->save();
         } else {
             return redirect()->back()->with('error', 'El tipo de usuario no puede ser nulo.');
         }
@@ -102,5 +109,35 @@ class EmpresaController extends Controller
         $empresa = Enterprise::first();
         return view('empresa.indexEmpresa', compact('empresa'));
     }
+    
+    public function agregarColaborador(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'enterprise_id' => 'required|exists:enterprises,id',
+        ]);
+    
+        // Verifica si ya existe la relación entre usuario y empresa
+        if (User_enterprise::where('user_id', $request->user_id)
+            ->where('enterprise_id', $request->enterprise_id)
+            ->exists()) {
+            return redirect()->back()->with('error', 'El usuario ya está vinculado a esta empresa.');
+        }
+    
+        // Cambia el tipo de usuario a 'employee'
+        $user = User::find($request->user_id);
+        $user->user_type = 'employee';
+        $user->save();
+    
+        // Crea la relación entre usuario y empresa
+        User_enterprise::create([
+            'user_id' => $request->user_id,
+            'enterprise_id' => $request->enterprise_id,
+            'user_type' => 'employee',
+        ]);
+    
+        return redirect()->back()->with('success', 'Colaborador agregado exitosamente.');
+    }
+    
 }
 

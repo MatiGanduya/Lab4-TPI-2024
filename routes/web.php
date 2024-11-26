@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/disponibilidad/{id}', [DisponibilidadController::class, 'destroy'])->name('disponibilidad.destroy');
     Route::get('/mis-turnos', [AppointmentController::class, 'index'])->name('turnos.index');
     Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
+    Route::post('/colaborador/agregar', [EmpresaController::class, 'agregarColaborador'])->name('colaborador.agregar');
+    Route::post('/agregar-colaborador', [EmpresaController::class, 'agregarColaborador'])->name('agregarColaborador');
 
 Route::put('/servicios/actualizar', [ServiceController::class, 'actualizar'])->name('servicios.actualizar');
 
