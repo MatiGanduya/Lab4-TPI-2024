@@ -12,7 +12,7 @@
         <div class="col-md-6">
             <h3>Seleccionar Fecha y Hora para el Servicio: {{ $servicio->name }}</h3>
 
-            <form action="{{ route('turnos.confirmar', ['servicio_id' => $servicio->id, 'usuario_colaborador_id' => $colaborador]) }}" method="POST">
+            <form action="{{ route('turnos.confirmar', ['servicio_id' => $servicio->id]) }}" method="POST">
                 @csrf
 
                 <div class="form-group">

@@ -14,57 +14,28 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit()
+    public function edit(Request $request): View
     {
-        $user = Auth::user(); // Obtén el usuario autenticado
-        return view('auth.register', compact('user')); // Reutiliza la vista register.blade.php
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
     }
-    // public function edit(Request $request): View
-    // {
-    //     return view('profile.edit', [
-    //         'user' => $request->user(),
-    //     ]);
-    // }
 
     /**
      * Update the user's profile information.
      */
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $user = Auth::user();
+        $request->user()->fill($request->validated());
 
-        // Valida los datos
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-
-        // Actualiza los datos del usuario
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
         }
 
-        $user->save();
+        $request->user()->save();
 
-        return redirect()->route('home')->with('success', 'Datos actualizados con éxito');
-
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-    // public function update(ProfileUpdateRequest $request): RedirectResponse
-    // {
-    //     $request->user()->fill($request->validated());
-
-    //     if ($request->user()->isDirty('email')) {
-    //         $request->user()->email_verified_at = null;
-    //     }
-
-    //     $request->user()->save();
-
-    //     return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    // }
 
     /**
      * Delete the user's account.
