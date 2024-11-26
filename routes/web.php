@@ -6,6 +6,7 @@ use App\Http\Controllers\TurnosController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\DisponibilidadController;
+use App\Http\Controllers\EmpresaColaboratorsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,9 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/turnos', [TurnosController::class, 'index'])->name('turnos.indexTurnos');
     Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.indexEmpresa');
-    Route::post('/add-collaborator', [EmpresaController::class, 'addCollaborator'])->name('addCollaborator');
-    Route::get('/enterprise/{id}/collaborators', [EmpresaController::class, 'getCollaborators'])->name('get.collaborators');
-    Route::post('/delete-collaborator', [EmpresaController::class, 'deleteCollaborator'])->name('deleteCollaborator');
+    Route::get('/empresa/colaboradores', [EmpresaColaboratorsController::class, 'showColaboradores'])->name('empresa.empresaColaboradores');
+    Route::post('/empresa/agregar-colaborador', [EmpresaColaboratorsController::class, 'addCollaborator'])->name('addCollaborator');
+    Route::get('/enterprise/{id}/collaborators', [EmpresaColaboratorsController::class, 'getCollaborators'])->name('get.collaborators');
+    Route::post('/delete-collaborator', [EmpresaColaboratorsController::class, 'deleteCollaborator'])->name('deleteCollaborator');
     Route::get('/disponibilidad', [DisponibilidadController::class, 'index'])->name('disponibilidad.indexDisponibilidad');
     Route::get('/mi-disponibilidad/crear', [DisponibilidadController::class, 'create'])->name('disponibilidad.create');
     Route::post('/mi-disponibilidad', [DisponibilidadController::class, 'store'])->name('disponibilidad.store');
