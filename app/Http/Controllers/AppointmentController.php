@@ -100,5 +100,15 @@ class AppointmentController extends Controller
         return redirect()->route('solicitudes.turnos')->with('success', 'Estado de la solicitud actualizado correctamente');
     }
 
+    public function checkPendingRequests()
+    {
+        $hasPendingRequests = Appointment::where('status', 'pending')
+            ->where('userProf_id', Auth::id()) // Filtra solicitudes del profesional autenticado
+            ->exists();
+
+        // Retorna la vista con esta información
+        return view('layouts.app', compact('hasPendingRequests'));
+    }
+
 
 }

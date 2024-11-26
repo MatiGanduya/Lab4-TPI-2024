@@ -30,6 +30,7 @@
     </style>
 
 </head>
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 <body class="d-flex flex-column min-vh-100">
 
     @include('layouts.header')
@@ -53,5 +54,6 @@
 {{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
 
     @yield('scripts')
+    @stack('scripts')
 </body>
 </html>

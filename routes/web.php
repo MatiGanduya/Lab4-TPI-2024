@@ -62,6 +62,8 @@ Route::delete('/turnos/cancel/{id}', [AppointmentController::class, 'cancel'])->
 Route::get('/solicitudes-turnos', [AppointmentController::class, 'getSolicitudes'])->name('solicitudes.turnos');
 Route::patch('/solicitudes-turnos/{id}', [AppointmentController::class, 'updateStatus'])->name('solicitudes.updateStatus');
 
+Route::get('/user/edit', [ProfileController::class, 'edit'])->name('user.edit');
+Route::post('/user/update', [ProfileController::class, 'update'])->name('user.update');
 
 });
 
