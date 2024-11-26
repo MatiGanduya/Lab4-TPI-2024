@@ -27,7 +27,7 @@
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción</label>
                             <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Descripción de la empresa"
-                                {{ isset($empresa) ? 'disabled' : 'disabled' }}>{{ isset($empresa) ? $empresa->description : '' }}</textarea>
+                                {{ isset($empresa) ? '' : 'disabled' }}>{{ isset($empresa) ? $empresa->description : '' }}</textarea>
                         </div>
 
                         <div class="mb-3">
@@ -59,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Nueva Tarjeta: Colaboradores -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -71,6 +70,20 @@
                     @if($empresa)
                     <ul class="list-group" id="collaboratorsList">
                         <!-- Los colaboradores se cargarán dinámicamente -->
+                        @foreach ($empresa->users as $user)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <!-- Solo mostrar el nombre del usuario -->
+                                <span class="flex-grow-1">{{ $user->name }}</span>
+
+                                <!-- Mostrar el botón solo si el usuario es un empleado y el admin está autenticado -->
+                                @if($user->user_type === 'employee' && auth()->user()->user_type === 'admin')
+                                    <button class="btn btn-sm btn-danger d-inline-flex align-items-center"
+                                            onclick="eliminarColaborador({{ $user->id }})" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
+                                    </button>
+                                @endif
+                            </li>
+                        @endforeach
                     </ul>
                     @else
                     <p>No tienes colaboradores asignados.</p>
@@ -78,6 +91,9 @@
                 </div>
             </div>
         </div>
+
+
+
 
         <!-- Tarjeta Mis Servicios -->
         <div class="col-md-4">
@@ -195,5 +211,31 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de selección de colaboradores -->
+<div class="modal fade" id="addCollaboratorModal" tabindex="-1" aria-labelledby="addCollaboratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCollaboratorModalLabel">Seleccionar Colaborador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Barra de búsqueda -->
+                <input type="text" id="searchUser" class="form-control" placeholder="Buscar usuario..." onkeyup="buscarUsuarios()">
+                <ul class="list-group mt-2" id="userList">
+                    <!-- Los usuarios se cargarán dinámicamente aquí -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dataContainer" data-url="{{ route('usuarios.noAsignados') }}"></div>
+<div id="dataContainer1" data-url="{{ route('colaborador.agregar') }}"></div>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 
 @endsection

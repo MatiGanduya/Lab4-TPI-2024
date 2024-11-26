@@ -159,5 +159,32 @@ class EmpresaController extends Controller
         }
     }
 
+    public function usuariosNoAsignados(Request $request)
+    {
+        // Obtener los usuarios que no están asociados a ninguna empresa
+        $usuarios = User::whereDoesntHave('enterprises')->get();
+
+        // Puedes paginar si lo prefieres
+        // $usuarios = User::whereDoesntHave('enterprises')->paginate(10);
+
+        return response()->json($usuarios);
+    }
+
+    public function eliminar(Enterprise $empresa, User $usuario)
+    {
+        try {
+
+
+            // Eliminar la relación entre el usuario y la empresa
+            $empresa->users()->detach($usuario->id);
+
+            return response()->json(['message' => 'Colaborador eliminado correctamente.']);
+        } catch (\Exception $e) {
+            // Registrar el error para depuración
+            Log::error('Error al eliminar colaborador: ' . $e->getMessage());
+            return response()->json(['error' => 'Hubo un error al procesar la solicitud.'], 500);
+        }
+    }
+
 }
 

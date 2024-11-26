@@ -46,6 +46,8 @@ Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'
 
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 Route::get('/colaboradores/{empresa_id}', [EmpresaController::class, 'getUsuariosPorEmpresa']);
+Route::get('/usuarios/no-asignados', [EmpresaController::class, 'usuariosNoAsignados'])->name('usuarios.noAsignados');
+Route::delete('/empresa/{empresa}/colaborador/{usuario}', [EmpresaController::class, 'eliminar'])->name('colaborador.eliminar');
 
 
 // Ruta para solicitar el turno
