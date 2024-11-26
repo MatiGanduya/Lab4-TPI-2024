@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
 
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
@@ -51,8 +51,7 @@
                             value="{{ isset($empresa) ? $empresa->location->postal_code : '' }}">
                         <input type="hidden" name="latitude" id="latitude" value="{{ isset($empresa) ? $empresa->location->latitude : '' }}">
                         <input type="hidden" name="longitude" id="longitude" value="{{ isset($empresa) ? $empresa->location->longitude : '' }}">
-                        <input type="hidden" name="id" value="{{ isset($empresa) ? $empresa->id : '' }}">
-
+                        <input type="hidden" name="id" value="{{ isset($empresa) ? $empresa->id : '' }}" id="empresaId">
 
                         <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
                     </form>
@@ -60,8 +59,28 @@
             </div>
         </div>
 
+        <!-- Nueva Tarjeta: Colaboradores -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Colaboradores</span>
+                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
+                        {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">+</button>
+                </div>
+                <div class="card-body">
+                    @if($empresa)
+                    <ul class="list-group" id="collaboratorsList">
+                        <!-- Los colaboradores se cargarán dinámicamente -->
+                    </ul>
+                    @else
+                    <p>No tienes colaboradores asignados.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <!-- Tarjeta Mis Servicios -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mis servicios</span>
@@ -176,43 +195,5 @@
         </div>
     </div>
 </div>
-
-<!-- Scripts para manejar la lógica de los modales -->
-<script>
-    // Mostrar el modal para editar un servicio
-    document.querySelectorAll('.service-card').forEach(function(card) {
-        card.addEventListener('click', function() {
-            const id = this.getAttribute('data-id'); // ID del servicio
-            const name = this.getAttribute('data-name'); // Nombre del servicio
-            const description = this.getAttribute('data-description'); // Descripción del servicio
-            const price = this.getAttribute('data-price'); // Precio del servicio
-            const duration = this.getAttribute('data-duration'); // Duración del servicio
-
-            // Asignar los valores al formulario de edición
-            document.getElementById('editServiceId').value = id;
-            document.getElementById('editServiceName').value = name;
-            document.getElementById('editServiceDescription').value = description;
-            document.getElementById('editServicePrice').value = price;
-            document.getElementById('editServiceDuration').value = duration;
-
-            $('#editServiceModal').modal('show');
-        });
-    });
-
-    // Manejador para habilitar el formulario de empresa
-    document.getElementById('editEmpresa').addEventListener('click', function() {
-        document.getElementById('nombre').disabled = false;
-        document.getElementById('descripcion').disabled = false;
-        document.getElementById('direccion').disabled = false;
-        document.getElementById('saveEmpresa').style.display = 'block';
-    });
-
-    document.getElementById('addServiceButton').addEventListener('click', function() {
-    var myModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
-    myModal.show();
-});
-
-
-</script>
 
 @endsection

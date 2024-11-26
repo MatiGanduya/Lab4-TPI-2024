@@ -47,6 +47,7 @@ Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 Route::get('/colaboradores/{empresa_id}', [EmpresaController::class, 'getUsuariosPorEmpresa']);
 
+
 // Ruta para solicitar el turno
 Route::get('/turnos/seleccion-fecha-hora/{servicio_id}/{usuario_colaborador_id}', [TurnosController::class, 'seleccionFechaHora'])->name('turnos.seleccionFechaHora');
 

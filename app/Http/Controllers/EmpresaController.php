@@ -132,16 +132,31 @@ class EmpresaController extends Controller
 
     public function getUsuariosPorEmpresa($empresa_id)
     {
-        // Buscar usuarios relacionados con la empresa
-        $usuarios = User::whereHas('enterprises', function ($query) use ($empresa_id) {
-            $query->where('enterprises.id', $empresa_id);  // Asegúrate de que 'enterprises.id' está correcto
-        })->get();
+        try {
+            // Depurar el ID de la empresa
+            \Log::info("Empresa ID recibido: {$empresa_id}");
 
+            // Buscar usuarios relacionados con la empresa
+            $usuarios = User::whereHas('enterprises', function ($query) use ($empresa_id) {
+                $query->where('enterprises.id', $empresa_id);
+            })->get();
 
-        //dd($usuarios);
-        // Devolver los usuarios como JSON
-        return response()->json($usuarios);
+            // Depurar los usuarios encontrados
+            \Log::info("Usuarios encontrados: ", $usuarios->toArray());
 
+            // Si no se encuentran usuarios, devolver un mensaje apropiado
+            if ($usuarios->isEmpty()) {
+                return response()->json(['message' => 'No se encontraron usuarios para esta empresa.'], 404);
+            }
+
+            // Devolver los usuarios como JSON
+            return response()->json($usuarios);
+
+        } catch (\Exception $e) {
+            // Capturar errores y mostrar el mensaje
+            \Log::error("Error al obtener usuarios: " . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error: ' . $e->getMessage()], 500);
+        }
     }
 
 }
