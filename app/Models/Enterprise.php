@@ -26,6 +26,8 @@ class enterprise extends Model
                     ->withPivot('user_type'); // Si usas un campo extra en la tabla pivote
     }
 
+
+    
     public function userEnterprises()
     {
         return $this->hasMany(User_enterprise::class);

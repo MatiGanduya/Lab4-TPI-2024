@@ -204,7 +204,7 @@
                         <select class="form-select" id="user_id" name="user_id" required>
                             <option value="" disabled selected>Selecciona un cliente</option>
                             @foreach ($clientes as $cliente)
-                            <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                                <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -234,13 +234,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!empty($clientes) && $clientes->isNotEmpty())
-                        @foreach ($clientes as $cliente)
-                        <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                        @foreach ($collaborators as $colaborador)
+                        <tr>
+                            <td>{{ $colaborador->name }}</td>
+                            <td>{{ $colaborador->email }}</td>
+                            <td>
+                                <form action="{{ route('deleteCollaborator') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $colaborador->id }}">
+                                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
                         @endforeach
-                        @else
-                        <option value="" disabled>No hay clientes disponibles</option>
-                        @endif
                     </tbody>
                 </table>
             </div>
@@ -248,15 +255,16 @@
     </div>
 </div>
 
-
 <!-- Scripts para manejar la lógica de los modales -->
+
 <script>
+    // Mostrar el modal para editar un servicio
     document.getElementById('addCollaboratorForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Evita el envío normal del formulario
 
         const formData = new FormData(this); // Recoge los datos del formulario
 
-        fetch("{{ route('colaborador.agregar') }}", { // Usar la ruta definida en web.php
+        fetch("{{ route('addCollaborator') }}", {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -276,6 +284,8 @@
                 console.error('Error:', error);
                 alert('Hubo un error al agregar el colaborador.');
             });
+
+
     });
 
     // Evento para eliminar colaborador
@@ -301,7 +311,9 @@
                 if (data.success) {
                     alert(data.message); // Mostrar mensaje de éxito
                     const userId = formData.get('user_id');
-                    const row = document.getElementById(`row-${userId}`);
+                    const row = document.getElementById(row - $ {
+                        userId
+                    });
                     if (row) row.remove(); // Eliminar la fila de la tabla
                 } else {
                     alert(data.message); // Mostrar mensaje de error
@@ -367,5 +379,4 @@
         myModal.show();
     });
 </script>
-
 @endsection
