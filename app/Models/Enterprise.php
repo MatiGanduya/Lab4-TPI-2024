@@ -21,6 +21,13 @@ class enterprise extends Model
                         ->withPivot('user_type'); // Si usas un campo extra en la tabla pivote
         }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_enterprises')
+                    ->withPivot('user_type')  // Aquí también traemos 'user_type' si lo necesitas
+                    ->withTimestamps();
+    }
+
     public function location()
     {
         return $this->belongsTo(Location::class);
