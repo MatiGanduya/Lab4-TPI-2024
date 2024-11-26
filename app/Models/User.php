@@ -60,9 +60,12 @@ class User extends Authenticatable
      }
 
      public function enterprises()
-     {
-        return $this->belongsToMany(Enterprise::class, 'user_enterprises')->withPivot('user_type');
-     }
+    {
+        return $this->belongsToMany(Enterprise::class, 'user_enterprises')
+                    ->withPivot('user_type')  // Esto incluye el campo 'user_type' del pivot
+                    ->withTimestamps();
+    }
+
 
      public function availabilities()
     {

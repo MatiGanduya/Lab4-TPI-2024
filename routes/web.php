@@ -48,6 +48,9 @@ Route::get('/servicios', [ServiceController::class, 'listarEmpresasConServicios'
 
 Route::post('/empresa/guardar', [EmpresaController::class, 'guardar'])->name('empresa.guardar');
 Route::get('/colaboradores/{empresa_id}', [EmpresaController::class, 'getUsuariosPorEmpresa']);
+Route::get('/usuarios/no-asignados', [EmpresaController::class, 'usuariosNoAsignados'])->name('usuarios.noAsignados');
+Route::delete('/empresa/{empresa}/colaborador/{usuario}', [EmpresaController::class, 'eliminar'])->name('colaborador.eliminar');
+
 
 // Ruta para solicitar el turno
 Route::get('/turnos/seleccion-fecha-hora/{servicio_id}/{usuario_colaborador_id}', [TurnosController::class, 'seleccionFechaHora'])->name('turnos.seleccionFechaHora');
@@ -55,11 +58,18 @@ Route::get('/turnos/seleccion-fecha-hora/{servicio_id}/{usuario_colaborador_id}'
 Route::get('/turnos/seleccion/{servicio_id}/{usuario_colaborador_id}/{fecha}', [TurnosController::class, 'mostrarDisponibilidad'])->name('turnos.mostrarDisponibilidad');
 
 
-Route::post('/turnos/confirmar/{servicio_id}', [AppointmentController::class, 'store'])->name('turnos.confirmar');
+Route::post('/turnos/confirmar/{servicio_id}/{usuario_colaborador_id}', [AppointmentController::class, 'store'])->name('turnos.confirmar');
 
 Route::get('/disponibilidad/horarios/{dia}', [DisponibilidadController::class, 'horarios']);
 
 Route::delete('/turnos/cancel/{id}', [AppointmentController::class, 'cancel'])->name('turnos.cancel');
+
+Route::get('/solicitudes-turnos', [AppointmentController::class, 'getSolicitudes'])->name('solicitudes.turnos');
+Route::patch('/solicitudes-turnos/{id}', [AppointmentController::class, 'updateStatus'])->name('solicitudes.updateStatus');
+
+Route::get('/user/edit', [ProfileController::class, 'edit'])->name('user.edit');
+Route::post('/user/update', [ProfileController::class, 'update'])->name('user.update');
+
 });
 
 require __DIR__.'/auth.php';

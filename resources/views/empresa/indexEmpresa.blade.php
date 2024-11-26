@@ -4,18 +4,10 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
 
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
-                    <!-- Botón en la tarjeta "Mi Empresa" -->
-                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
-                        {{ !$empresa ? 'disabled' : '' }}
-                        style="{{ !$empresa ? 'opacity: 0.5;' : '' }}"
-                        data-bs-toggle="modal"
-                        data-bs-target="#manageCollaboratorsModal">
-                        Colaboradores
-                    </button>
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
                     </button>
@@ -35,7 +27,7 @@
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción</label>
                             <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Descripción de la empresa"
-                                {{ isset($empresa) ? 'disabled' : 'disabled' }}>{{ isset($empresa) ? $empresa->description : '' }}</textarea>
+                                {{ isset($empresa) ? '' : 'disabled' }}>{{ isset($empresa) ? $empresa->description : '' }}</textarea>
                         </div>
 
                         <div class="mb-3">
@@ -59,8 +51,7 @@
                             value="{{ isset($empresa) ? $empresa->location->postal_code : '' }}">
                         <input type="hidden" name="latitude" id="latitude" value="{{ isset($empresa) ? $empresa->location->latitude : '' }}">
                         <input type="hidden" name="longitude" id="longitude" value="{{ isset($empresa) ? $empresa->location->longitude : '' }}">
-                        <input type="hidden" name="id" value="{{ isset($empresa) ? $empresa->id : '' }}">
-
+                        <input type="hidden" name="id" value="{{ isset($empresa) ? $empresa->id : '' }}" id="empresaId">
 
                         <button class="btn btn-primary" id="saveEmpresa" style="display: none;">Guardar</button>
                     </form>
@@ -68,8 +59,44 @@
             </div>
         </div>
 
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Colaboradores</span>
+                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
+                        {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">+</button>
+                </div>
+                <div class="card-body">
+                    @if($empresa)
+                    <ul class="list-group" id="collaboratorsList">
+                        <!-- Los colaboradores se cargarán dinámicamente -->
+                        @foreach ($empresa->users as $user)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <!-- Solo mostrar el nombre del usuario -->
+                                <span class="flex-grow-1">{{ $user->name }}</span>
+
+                                <!-- Mostrar el botón solo si el usuario es un empleado y el admin está autenticado -->
+                                @if($user->user_type === 'employee' && auth()->user()->user_type === 'admin')
+                                    <button class="btn btn-sm btn-danger d-inline-flex align-items-center"
+                                            onclick="eliminarColaborador({{ $user->id }})" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
+                                    </button>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                    @else
+                    <p>No tienes colaboradores asignados.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+
+
+
         <!-- Tarjeta Mis Servicios -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mis servicios</span>
@@ -130,10 +157,10 @@
                     <div class="form-group">
                         <label for="servicePrice">Precio</label>
                         <input type="number" class="form-control" id="servicePrice" name="price" required>
-                        <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label for="serviceDuration">Duración</label>
-                        <select class="form-control" id="serviceDuration" name="duration" required>
-                        </select>
+                        <input type="text" class="form-control" id="serviceDuration" name="duration" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -184,173 +211,31 @@
     </div>
 </div>
 
-<!-- Modal para agregar colaborador -->
-<div class="modal fade" id="manageCollaboratorsModal" tabindex="-1" aria-labelledby="manageCollaboratorsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<!-- Modal de selección de colaboradores -->
+<div class="modal fade" id="addCollaboratorModal" tabindex="-1" aria-labelledby="addCollaboratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="manageCollaboratorsModalLabel">Gestionar Colaboradores</h5>
+                <h5 class="modal-title" id="addCollaboratorModalLabel">Seleccionar Colaborador</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Formulario para agregar colaborador -->
-                <form id="addCollaboratorForm">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="user_id" class="form-label">Seleccionar Cliente</label>
-                        <select class="form-select" id="user_id" name="user_id" required>
-                            <option value="" disabled selected>Selecciona un cliente</option>
-                            @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
-                    <button type="submit" class="btn btn-primary">Agregar Colaborador</button>
-                </form>
-                <hr>
-                <!-- Tabla para listar colaboradores -->
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                <!-- Barra de búsqueda -->
+                <input type="text" id="searchUser" class="form-control" placeholder="Buscar usuario..." onkeyup="buscarUsuarios()">
+                <ul class="list-group mt-2" id="userList">
+                    <!-- Los usuarios se cargarán dinámicamente aquí -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 
-                @if(session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                <h6>Lista de Colaboradores</h6>
-                <table class="table table-bordered" id="collaboratorsTable">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Correo Electrónico</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($collaborators as $colaborador)
-                            <tr>
-                                <td>{{ $colaborador->name }}</td>
-                                <td>{{ $colaborador->email }}</td>
-                                <td>
-                                    <form action="{{ route('deleteCollaborator') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="user_id" value="{{ $colaborador->id }}">
-                                        <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Scripts para manejar la lógica de los modales -->
-<script>
-    // servicio
-    document.addEventListener('DOMContentLoaded', function() {
-        const durationSelect = document.getElementById('serviceDuration');
-        const maxMinutes = 24 * 60; // 24 horas en minutos
-        const interval = 15; // Intervalo de 15 minutos
-
-        for (let minutes = interval; minutes <= maxMinutes; minutes += interval) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            let optionText = '';
-
-            if (hours > 0) {
-                optionText += `${hours} hora${hours > 1 ? 's' : ''}`;
-            }
-            if (mins > 0) {
-                optionText += ` ${mins} minuto${mins > 1 ? 's' : ''}`;
-            }
-
-            const option = document.createElement('option');
-            option.value = `${hours}:${mins < 10 ? '0' + mins : mins}`;
-            option.textContent = optionText.trim();
-            durationSelect.appendChild(option);
-        }
-    });
-</script>
-
-<script>
-    // Mostrar el modal para editar un servicio
-    document.querySelectorAll('.service-card').forEach(function(card) {
-        card.addEventListener('click', function() {
-            const id = this.getAttribute('data-id'); // ID del servicio
-            const name = this.getAttribute('data-name'); // Nombre del servicio
-            const description = this.getAttribute('data-description'); // Descripción del servicio
-            const price = this.getAttribute('data-price'); // Precio del servicio
-            const duration = this.getAttribute('data-duration'); // Duración del servicio
-
-            // Asignar los valores al formulario de edición
-            document.getElementById('editServiceId').value = id;
-            document.getElementById('editServiceName').value = name;
-            document.getElementById('editServiceDescription').value = description;
-            document.getElementById('editServicePrice').value = price;
-            document.getElementById('editServiceDuration').value = duration;
-
-            $('#editServiceModal').modal('show');
-        });
-    });
-
-    // Manejador para habilitar el formulario de empresa
-    document.getElementById('editEmpresa').addEventListener('click', function() {
-        document.getElementById('nombre').disabled = false;
-        document.getElementById('descripcion').disabled = false;
-        document.getElementById('direccion').disabled = false;
-        document.getElementById('saveEmpresa').style.display = 'block';
-    });
-
-    document.getElementById('addServiceButton').addEventListener('click', function() {
-    var myModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
-    myModal.show();
-});
-</script>
-
-<script>
-    // Agregar un colaborador
-    document.getElementById('addCollaboratorForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Evita el envío normal del formulario
-
-        const formData = new FormData(this); // Recoge los datos del formulario
-
-        fetch("{{ route('addCollaborator') }}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest", // Indica que es una solicitud AJAX
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message); // Muestra el mensaje
-                    location.reload(); // Recarga la página para asegurar que todo esté actualizado
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Hubo un error al agregar el colaborador.');
-            });
-    });
-
-
-        // Evento para eliminar colaborador
-        document.querySelectorAll('.delete-collaborator-form').forEach(form => {
-            form.addEventListener('submit', async function (e) {
-            e.preventDefault(); // Detener el envío tradicional del formulario
-
-            const formData = new FormData(this);
+<div id="dataContainer" data-url="{{ route('usuarios.noAsignados') }}"></div>
+<div id="dataContainer1" data-url="{{ route('colaborador.agregar') }}"></div>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
             try {
                 const response = await fetch(this.action, {

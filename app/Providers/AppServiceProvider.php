@@ -2,22 +2,29 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Appointment;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
+    public function boot()
     {
-        //
+        View::composer('*', function ($view) {
+            $pendingAppointments = 0;
+
+            if (Auth::check()) {
+                $pendingAppointments = Appointment::where('status', 'pending')
+                    ->where('userProf_id', Auth::id())
+                    ->count();
+            }
+
+            $view->with('pendingAppointments', $pendingAppointments);
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
+    public function register(): void
     {
         //
     }
