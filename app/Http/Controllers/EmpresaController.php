@@ -115,6 +115,5 @@ class EmpresaController extends Controller
         $empresa = Enterprise::first();
         return view('empresa.indexEmpresa', compact('empresa'));
     }
-
 }
 

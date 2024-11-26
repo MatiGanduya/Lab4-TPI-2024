@@ -65,7 +65,7 @@ class User extends Authenticatable
      }
 
      public function availabilities()
-{
-    return $this->hasMany(Availability::class, 'userProf_id');
-}
+    {
+        return $this->hasMany(Availability::class, 'userProf_id');
+    }
 }

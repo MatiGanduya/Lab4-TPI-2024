@@ -1,0 +1,7 @@
+.fc-day.fc-disabled-day {
+    background-color: #f0f0f0; /* Color más tenue */
+    color: #999; /* Cambia el color del texto para que se vea deshabilitado */
+    pointer-events: none; /* Evita que sean clickeables */
+    opacity: 0.6; /* Reduce la opacidad */
+}
+

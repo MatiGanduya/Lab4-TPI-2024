@@ -101,7 +101,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -127,10 +126,10 @@
                     <div class="form-group">
                         <label for="servicePrice">Precio</label>
                         <input type="number" class="form-control" id="servicePrice" name="price" required>
-                    </div>
-                    <div class="form-group">
+                        <div class="form-group">
                         <label for="serviceDuration">Duración</label>
-                        <input type="text" class="form-control" id="serviceDuration" name="duration" required>
+                        <select class="form-control" id="serviceDuration" name="duration" required>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -180,5 +179,4 @@
         </div>
     </div>
 </div>
-
 @endsection
