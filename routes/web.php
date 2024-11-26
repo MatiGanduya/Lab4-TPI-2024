@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/servicio/guardar', [ServiceController::class, 'guardar'])->name('servicios.guardar');
     Route::post('/colaborador/agregar', [EmpresaController::class, 'agregarColaborador'])->name('colaborador.agregar');
     Route::post('/agregar-colaborador', [EmpresaController::class, 'agregarColaborador'])->name('agregarColaborador');
+    Route::post('/add-collaborator', [EmpresaController::class, 'addCollaborator'])->name('addCollaborator');
+    Route::post('/remove-collaborator', [EmpresaController::class, 'removeCollaborator'])->name('removeCollaborator');
+
 
 Route::put('/servicios/actualizar', [ServiceController::class, 'actualizar'])->name('servicios.actualizar');
 

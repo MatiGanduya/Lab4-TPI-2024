@@ -9,7 +9,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
                     <!-- Botón en la tarjeta "Mi Empresa" -->
-                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#manageCollaboratorsModal"
                         {{ !$empresa ? 'disabled' : '' }}
                         style="{{ !$empresa ? 'opacity: 0.5;' : '' }}"
                         data-bs-toggle="modal"
@@ -186,78 +186,135 @@
 </div>
 
 <!-- Modal para agregar colaborador -->
-<div class="modal fade" id="addCollaboratorModal" tabindex="-1" aria-labelledby="addCollaboratorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="manageCollaboratorsModal" tabindex="-1" aria-labelledby="manageCollaboratorsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-        <form action="{{ route('colaborador.agregar') }}" method="POST" id="formAgregarColaborador">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCollaboratorModalLabel">Agregar Colaborador</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="user_id">Seleccionar Usuario</label>
-                        <select class="form-control" id="user_id" name="user_id" required>
-                            <option value="">-- Seleccionar Usuario --</option>
-                            @if (!empty($clientes) && $clientes->isNotEmpty())
-                                @foreach ($clientes as $cliente)
-                                 <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
-                                @endforeach
-                            @else
-                                <option value="" disabled>No hay clientes disponibles</option>
-                            @endif
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageCollaboratorsModalLabel">Gestionar Colaboradores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para agregar colaborador -->
+                <form id="addCollaboratorForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="user_id" class="form-label">Seleccionar Cliente</label>
+                        <select class="form-select" id="user_id" name="user_id" required>
+                            <option value="" disabled selected>Selecciona un cliente</option>
+                            @foreach ($clientes as $cliente)
+                            <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                            @endforeach
                         </select>
                     </div>
+                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
+                    <button type="submit" class="btn btn-primary">Agregar Colaborador</button>
+                </form>
+                <hr>
+                <!-- Tabla para listar colaboradores -->
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" id="formAgregarColaborador">Agregar</button>
+                @endif
 
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
                 </div>
-            </form>
+                @endif
+                <h6>Lista de Colaboradores</h6>
+                <table class="table table-bordered" id="collaboratorsTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!empty($clientes) && $clientes->isNotEmpty())
+                        @foreach ($clientes as $cliente)
+                        <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                        @endforeach
+                        @else
+                        <option value="" disabled>No hay clientes disponibles</option>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 
+
 <!-- Scripts para manejar la lógica de los modales -->
 
 <script>
-document.getElementById('formAgregarColaborador').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevenir envío tradicional
+    // Enviar datos para agregar colaborador
+    document.getElementById('addCollaboratorForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita el envío normal del formulario
 
-    const form = e.target;
-    const formData = new FormData(form);
+        const formData = new FormData(this); // Recoge los datos del formulario
 
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            alert('Colaborador agregado correctamente');
-            location.reload(); // Recarga la página
-        } else {
-            alert('Ocurrió un error al agregar el colaborador');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al procesar la solicitud');
+        fetch("{{ route('addCollaborator') }}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF Token
+                    "X-Requested-With": "XMLHttpRequest" // Indica que es una solicitud AJAX
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message); // Mensaje de éxito
+                    location.reload(); // Recarga la página
+                } else {
+                    alert(data.message); // Mensaje de error del servidor
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al intentar agregar el colaborador.');
+            });
     });
-});
-</script>
 
+    // Eliminar colaborador
+    document.querySelectorAll('.delete-collaborator-form').forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Detener el envío tradicional del formulario
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) throw new Error('Error en la solicitud');
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message); // Mostrar mensaje de éxito
+                    const userId = formData.get('user_id');
+                    const row = document.getElementById(`row-${userId}`);
+                    if (row) row.remove(); // Eliminar la fila de la tabla
+                } else {
+                    alert(data.message); // Mostrar mensaje de error
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al eliminar el colaborador.');
+            }
+        });
+    });
+</script>
 
 
 <script>
