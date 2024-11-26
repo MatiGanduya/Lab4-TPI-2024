@@ -63,7 +63,7 @@ class EmpresaColaboratorsController extends Controller
         ]);
 
         // Respuesta JSON para solicitudes AJAX
-        return response()->json(['success' => true, 'message' => 'Colaborador agregado con éxito.']);
+        return redirect()->back()->with('success', 'Colaborador agregado con éxito.');
     }
 
     public function deleteCollaborator(Request $request)

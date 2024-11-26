@@ -5,6 +5,17 @@
     <div class="row">
         <div class="col-12">
             <h1>Gestionar Colaboradores</h1>
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             <!-- Formulario para agregar colaborador -->
             <form id="addCollaboratorForm" action="{{ route('addCollaborator') }}" method="POST" >
@@ -23,19 +34,6 @@
             </form>
 
             <hr>
-
-            <!-- Mensajes de éxito/error -->
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
 
             <!-- Tabla para listar colaboradores -->
             <h6>Lista de Colaboradores</h6>
