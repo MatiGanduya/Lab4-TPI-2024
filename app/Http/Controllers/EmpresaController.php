@@ -138,6 +138,20 @@ class EmpresaController extends Controller
     
         return redirect()->back()->with('success', 'Colaborador agregado exitosamente.');
     }
+
+    public function gestionarColaboradores($enterpriseId)
+    {
+        $empresa = Enterprise::findOrFail($enterpriseId);
+    
+        // Obtener colaboradores relacionados con la empresa
+        $colaboradores = $empresa->users()->whereNotNull('name')->get();
+    
+        return view('ruta_de_tu_vista', [
+            'empresa' => $empresa,
+            'colaboradores' => $colaboradores,
+        ]);
+    }
+    
     
 }
 

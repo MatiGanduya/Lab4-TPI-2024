@@ -202,7 +202,13 @@
                         <select class="form-select" id="user_id" name="user_id" required>
                             <option value="" disabled selected>Selecciona un cliente</option>
                             @foreach ($clientes as $cliente)
-                            <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                            <option
+                                value="{{ $cliente->id }}"
+                                @if(is_null($cliente->name) || is_null($cliente->email)) disabled @endif
+                                >
+                                {{ $cliente->name ?? 'Nombre no disponible' }}
+                                ({{ $cliente->email ?? 'Correo no disponible' }})
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -211,17 +217,6 @@
                 </form>
                 <hr>
                 <!-- Tabla para listar colaboradores -->
-                @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                @endif
-
-                @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-                @endif
                 <h6>Lista de Colaboradores</h6>
                 <table class="table table-bordered" id="collaboratorsTable">
                     <thead>
@@ -232,13 +227,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!empty($clientes) && $clientes->isNotEmpty())
-                        @foreach ($clientes as $cliente)
-                        <option value="{{ $cliente->id }}">{{ $cliente->name }} ({{ $cliente->email }})</option>
+                        @if (isset($colaboradores) && $colaboradores->count() > 0)
+                        @foreach ($colaboradores as $colaborador)
+                        <tr id="row-{{ $colaborador->id }}">
+                            <td>{{ $colaborador->name ?? 'Nombre no disponible' }}</td>
+                            <td>{{ $colaborador->email ?? 'Correo no disponible' }}</td>
+                            <td>
+                                <form action="{{ route('deleteCollaborator') }}" method="POST" class="delete-collaborator-form">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $colaborador->id }}">
+                                    <input type="hidden" name="enterprise_id" value="{{ $empresa->id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
                         @endforeach
                         @else
-                        <option value="" disabled>No hay clientes disponibles</option>
+                        <tr>
+                            <td colspan="3" class="text-center">No hay colaboradores asociados a esta empresa.</td>
+                        </tr>
                         @endif
+
                     </tbody>
                 </table>
             </div>
@@ -247,11 +256,9 @@
 </div>
 
 
-
 <!-- Scripts para manejar la lógica de los modales -->
-
 <script>
-    // Enviar datos para agregar colaborador
+    // Mostrar el modal para editar un servicio
     document.getElementById('addCollaboratorForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Evita el envío normal del formulario
 
@@ -261,26 +268,27 @@
                 method: "POST",
                 body: formData,
                 headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF Token
-                    "X-Requested-With": "XMLHttpRequest" // Indica que es una solicitud AJAX
+                    "X-Requested-With": "XMLHttpRequest", // Indica que es una solicitud AJAX
                 }
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message); // Mensaje de éxito
-                    location.reload(); // Recarga la página
+                    alert(data.message); // Muestra el mensaje
+                    location.reload(); // Recarga la página para asegurar que todo esté actualizado
                 } else {
-                    alert(data.message); // Mensaje de error del servidor
+                    alert(data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Hubo un error al intentar agregar el colaborador.');
+                alert('Hubo un error al agregar el colaborador.');
             });
+
+
     });
 
-    // Eliminar colaborador
+    // Evento para eliminar colaborador
     document.querySelectorAll('.delete-collaborator-form').forEach(form => {
         form.addEventListener('submit', async function(e) {
             e.preventDefault(); // Detener el envío tradicional del formulario
@@ -312,10 +320,9 @@
                 console.error('Error:', error);
                 alert('Hubo un error al eliminar el colaborador.');
             }
-        });
+        })
     });
 </script>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
