@@ -171,9 +171,32 @@
                         <label for="servicePrice">Precio</label>
                         <input type="number" class="form-control" id="servicePrice" name="price" required>
                     </div>
+
+                    <!-- Selector de Duración -->
                     <div class="form-group">
                         <label for="serviceDuration">Duración</label>
-                        <input type="text" class="form-control" id="serviceDuration" name="duration" required>
+                        <div class="row">
+                            <!-- Selector de horas -->
+                            <div class="col-6">
+                                <label for="serviceHours">Horas</label>
+                                <select class="form-control" id="serviceHours" name="hours" required>
+                                    <option value="0">0</option>
+                                    @for ($i = 1; $i <= 24; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <!-- Selector de minutos -->
+                            <div class="col-6">
+                                <label for="serviceMinutes">Minutos</label>
+                                <select class="form-control" id="serviceMinutes" name="minutes" required>
+                                    <option value="0">0 minutos</option>
+                                    <option value="15">15 minutos</option>
+                                    <option value="30">30 minutos</option>
+                                    <option value="45">45 minutos</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -184,6 +207,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modal para editar servicio -->
 <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
@@ -212,7 +236,16 @@
                     </div>
                     <div class="form-group">
                         <label for="editServiceDuration">Duración</label>
-                        <input type="text" class="form-control" id="editServiceDuration" name="duration" required>
+                        <select class="form-control" id="editServiceDuration" name="duration" required>
+                            <!-- Aquí se llenan los intervalos de tiempo -->
+                            @foreach(range(0, 23) as $hour)
+                                @foreach([0, 15, 30, 45] as $minute)
+                                    <option value="{{ sprintf('%02d:%02d', $hour, $minute) }}">
+                                        {{ sprintf('%02d:%02d', $hour, $minute) }}
+                                    </option>
+                                @endforeach
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
