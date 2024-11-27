@@ -63,34 +63,40 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Colaboradores</span>
-                    <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
-                        {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">+</button>
+                    @if(auth()->user()->user_type === 'admin')
+                        <!-- Mostrar el botón solo si el usuario autenticado es admin -->
+                        <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
+                            {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">
+                            +
+                        </button>
+                    @endif
                 </div>
                 <div class="card-body">
                     @if($empresa)
-                    <ul class="list-group" id="collaboratorsList">
-                        <!-- Los colaboradores se cargarán dinámicamente -->
-                        @foreach ($empresa->users as $user)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <!-- Solo mostrar el nombre del usuario -->
-                                <span class="flex-grow-1">{{ $user->name }}</span>
+                        <ul class="list-group" id="collaboratorsList">
+                            <!-- Los colaboradores se cargarán dinámicamente -->
+                            @foreach ($empresa->users as $user)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <!-- Solo mostrar el nombre del usuario -->
+                                    <span class="flex-grow-1">{{ $user->name }}</span>
 
-                                <!-- Mostrar el botón solo si el usuario es un empleado y el admin está autenticado -->
-                                @if($user->user_type === 'employee' && auth()->user()->user_type === 'admin')
-                                    <button class="btn btn-sm btn-danger d-inline-flex align-items-center"
-                                            onclick="eliminarColaborador({{ $user->id }})" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">
-                                        <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
-                                    </button>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
+                                    <!-- Mostrar el botón solo si el usuario es un empleado y el admin está autenticado -->
+                                    @if($user->user_type === 'employee' && auth()->user()->user_type === 'admin')
+                                        <button class="btn btn-sm btn-danger d-inline-flex align-items-center"
+                                                onclick="eliminarColaborador({{ $user->id }})" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">
+                                            <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
+                                        </button>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
                     @else
-                    <p>No tienes colaboradores asignados.</p>
+                        <p>No tienes colaboradores asignados.</p>
                     @endif
                 </div>
             </div>
         </div>
+
 
 
 
