@@ -5,9 +5,9 @@
     <div class="row">
         <!-- Cuadro de Empresas -->
         <div class="col-md-6">
-            <h3>Empresas</h3>
+            <h3 class="text-center" style="color: #ffffff;">Empresas</h3>
             <table class="table table-bordered">
-                <thead class="table-dark">
+                <thead style="background-color: #0069d9; color: white;">
                     <tr>
                         <th>Empresa</th>
                         <th>Seleccionar</th>
@@ -19,7 +19,7 @@
                         <td>{{ $empresa->name }}</td>
                         <td>
                             <a href="{{ route('servicios.index', ['empresa_id' => $empresa->id]) }}"
-                               class="btn btn-outline-primary">
+                               class="btn btn-outline-primary custom-btn">
                                Ver Servicios
                             </a>
                         </td>
@@ -31,10 +31,10 @@
 
         <!-- Cuadro de Servicios de la Empresa Seleccionada -->
         <div class="col-md-6">
-            <h3>Servicios</h3>
+            <h3 class="text-center" style="color: #ffffff;">Servicios</h3>
             @if($empresaSeleccionada)
                 <table class="table table-bordered">
-                    <thead class="table-dark">
+                    <thead style="background-color: #0069d9; color: white;">
                         <tr>
                             <th>Servicio</th>
                             <th>Descripción</th>
@@ -51,13 +51,12 @@
                             <td>${{ number_format($servicio->price, 2) }}</td>
                             <td>{{ $servicio->duration }}</td>
                             <td>
-                                <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                <button class="btn custom-btn" data-bs-toggle="modal"
                                         data-bs-target="#modalColaboradores"
                                         data-servicio-id="{{ $servicio->id }}"
                                         data-empresa-id="{{ $empresaSeleccionada->id }}">
                                         Solicitar turno
                                 </button>
-
                             </td>
                         </tr>
                         @endforeach
@@ -74,22 +73,73 @@
 <div class="modal fade" id="modalColaboradores" tabindex="-1" aria-labelledby="modalColaboradoresLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="background-color: #2C3E50; color: white;">
                 <h5 class="modal-title" id="modalColaboradoresLabel">Colaboradores</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <p>Aquí puedes incluir información adicional sobre los colaboradores o el servicio seleccionado.</p>
                 <!-- Puedes cargar colaboradores dinámicamente con JavaScript o backend -->
-
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="background-color: #2C3E50; color: white;">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a href="#" id="confirmTurno" class="btn btn-primary">Confirmar turno</a>
+                <a href="#" id="confirmTurno" class="btn custom-btn">Confirmar turno</a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Colores personalizados acordados */
+    :root {
+        --primary-color: #0069d9;
+        --secondary-color: #1d72b8;
+        --text-color: #333;
+        --button-bg-color: #0069d9;
+        --button-text-color: #ffffff;
+        --button-hover-bg-color: #0056b3;
+        --background-color: #2C3E50; /* Fondo principal */
+    }
+
+    /* Fondo global */
+    body {
+        background-color: var(--background-color);
+        color: white;
+    }
+
+    .custom-btn {
+        background-color: var(--button-bg-color);
+        color: var(--button-text-color);
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-btn:hover {
+        background-color: var(--button-hover-bg-color);
+    }
+
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .modal-header, .modal-footer {
+        background-color: var(--primary-color);
+    }
+
+    .modal-title {
+        color: white;
+    }
+
+    .text-center {
+        color: var(--text-color);
+    }
+
+    h3 {
+        color: white; /* Color para los encabezados */
+    }
+</style>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

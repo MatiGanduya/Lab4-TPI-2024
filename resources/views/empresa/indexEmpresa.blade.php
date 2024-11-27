@@ -280,5 +280,11 @@
 <div id="dataContainer1" data-url="{{ route('colaborador.agregar') }}"></div>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+<style>
+        body {
+        background-color: #2C3E50;
+        color: #ECF0F1;
+    }
+</style>
 
 @endsection
