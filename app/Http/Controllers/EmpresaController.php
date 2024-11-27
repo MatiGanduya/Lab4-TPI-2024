@@ -173,10 +173,17 @@ class EmpresaController extends Controller
     public function eliminar(Enterprise $empresa, User $usuario)
     {
         try {
-
-
             // Eliminar la relación entre el usuario y la empresa
             $empresa->users()->detach($usuario->id);
+
+            // Verificar si el usuario ya no está vinculado a ninguna empresa
+            $remainingEnterprises = $usuario->enterprises()->count();
+
+            if ($remainingEnterprises === 0) {
+                // Restablecer el tipo de usuario a "client" o el valor predeterminado
+                $usuario->user_type = 'client'; // Enum: 'client', 'employee', etc.
+                $usuario->save();
+            }
 
             return response()->json(['message' => 'Colaborador eliminado correctamente.']);
         } catch (\Exception $e) {
@@ -185,6 +192,7 @@ class EmpresaController extends Controller
             return response()->json(['error' => 'Hubo un error al procesar la solicitud.'], 500);
         }
     }
+
 
 }
 

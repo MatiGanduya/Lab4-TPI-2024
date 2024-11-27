@@ -8,9 +8,11 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
+                    @if(auth()->user()->user_type === 'admin')
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
                     </button>
+                    @endif
                 </div>
                 <div class="card-body">
 
@@ -66,21 +68,23 @@
                     @if(auth()->user()->user_type === 'admin')
                         <!-- Mostrar el botón solo si el usuario autenticado es admin -->
                         <button class="btn btn-outline-secondary btn-sm" id="addCollaboratorButton"
-                            {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">
+                                {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">
                             +
                         </button>
                     @endif
                 </div>
                 <div class="card-body">
                     @if($empresa)
+                        <!-- Input oculto para el ID de la empresa -->
+                        <input type="hidden" id="empresaId" value="{{ $empresa->id }}">
+
                         <ul class="list-group" id="collaboratorsList">
-                            <!-- Los colaboradores se cargarán dinámicamente -->
+                            <!-- Iterar sobre los colaboradores -->
                             @foreach ($empresa->users as $user)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <!-- Solo mostrar el nombre del usuario -->
+                                <li id="collaborator-{{ $user->id }}" class="list-group-item d-flex justify-content-between align-items-center">
                                     <span class="flex-grow-1">{{ $user->name }}</span>
 
-                                    <!-- Mostrar el botón solo si el usuario es un empleado y el admin está autenticado -->
+                                    <!-- Botón para eliminar -->
                                     @if($user->user_type === 'employee' && auth()->user()->user_type === 'admin')
                                         <button class="btn btn-sm btn-danger d-inline-flex align-items-center"
                                                 onclick="eliminarColaborador({{ $user->id }})" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">
@@ -106,8 +110,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mis servicios</span>
+                    @if(auth()->user()->user_type === 'admin')
                     <button class="btn btn-outline-secondary btn-sm" id="addServiceButton"
                         {{ !$empresa ? 'disabled' : '' }} style="{{ !$empresa ? 'opacity: 0.5;' : '' }}">+</button>
+                    @endif
                 </div>
                 <div class="card-body">
                     @php

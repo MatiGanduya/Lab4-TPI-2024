@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+
 });
 
 // Función para cargar los usuarios que no están asignados a ninguna empresa
@@ -187,7 +188,6 @@ function agregarColaborador(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.message) {
-            alert(data.message); // Mostrar mensaje de éxito o error
             cargarUsuarios(); // Recargar la lista de usuarios
         } else {
             alert('Error desconocido.');
@@ -217,7 +217,7 @@ function buscarUsuarios() {
 
 // Función para eliminar un colaborador
 function eliminarColaborador(userId) {
-    const empresaId = document.getElementById('empresaId').value; // Asegúrate de tener este valor
+    const empresaId = document.getElementById('empresaId').value; // Asegúrate de tener este valor en un input oculto
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     fetch(`/empresa/${empresaId}/colaborador/${userId}`, {
@@ -228,25 +228,23 @@ function eliminarColaborador(userId) {
         }
     })
     .then(response => {
-        // Verificar si la respuesta es exitosa (status 200-299)
+        // Verificar si la respuesta es exitosa
         if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(`Error: ${response.status} - ${text}`);
+            return response.json().then(data => {
+                throw new Error(data.error || 'Hubo un error al eliminar al colaborador.');
             });
         }
-        return response.json(); // Convertir la respuesta en JSON si es exitosa
+        return response.json();
     })
-    .then(data => {
-        if (data.message) {
-            alert(data.message);
-            cargarUsuarios(); // Recargar la lista de colaboradores
-        } else {
-            alert('Error desconocido.');
+    .then(() => {
+        const collaboratorItem = document.getElementById(`collaborator-${userId}`);
+        if (collaboratorItem) {
+            collaboratorItem.remove();
         }
     })
     .catch(error => {
         console.error('Error al eliminar colaborador:', error);
-        alert('Hubo un error al eliminar al colaborador.');
+        alert(error.message || 'Hubo un error al eliminar al colaborador.');
     });
 }
 
