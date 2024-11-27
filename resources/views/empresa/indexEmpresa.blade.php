@@ -8,11 +8,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mi Empresa</span>
-                    @if(auth()->user()->user_type === 'admin')
                     <button class="btn btn-outline-secondary btn-sm" id="editEmpresa">
                         {{ isset($empresa) ? 'Editar' : '+' }}
                     </button>
-                    @endif
                 </div>
                 <div class="card-body">
 

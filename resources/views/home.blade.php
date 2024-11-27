@@ -18,8 +18,12 @@
             <div class="d-grid gap-3">
                 <a href="{{ route('servicios.index') }}" class="btn btn-primary btn-lg">Solicitar un turno</a>
                 <a href="{{ route('turnos.index') }}" class="btn btn-primary btn-lg">Mis turnos</a>
+                @if (!Auth::check() || (Auth::user() && Auth::user()->user_type !== 'employee'))
                 <a href="{{ route('empresa.indexEmpresa') }}" class="btn btn-primary btn-lg">Mi empresa y servicios</a>
+                @endif
+                @if (Auth::user() && Auth::user()->user_type !== 'client')
                 <a href="{{ route('disponibilidad.indexDisponibilidad') }}" class="btn btn-primary btn-lg">Mi disponibilidad</a>
+                @endif
             </div>
         </div>
     </div>
