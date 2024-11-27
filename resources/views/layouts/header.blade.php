@@ -29,8 +29,12 @@
                    <li><a href="{{ url('/') }}" class="btn btn-outline-light me-2">Home</a></li>
                     <li><a href="{{ Route('servicios.index') }}" class="btn btn-outline-light me-2">Turnos</a></li>
                     @auth
+                    @if (!Auth::check() || (Auth::user() && Auth::user()->user_type !== 'employee'))
                     <li><a href="{{ Route('empresa.indexEmpresa') }}" class="btn btn-outline-light me-2">Mi Empresa y Servicios</a></li>
+                    @endif
+                    @if (Auth::user() && Auth::user()->user_type !== 'client')
                     <li><a href="{{ Route('disponibilidad.indexDisponibilidad') }}" class="btn btn-outline-light me-2">Mi disponibilidad</a></li>
+                    @endif
                     @endauth
                 </ul>
 
