@@ -51,7 +51,12 @@ class ServiceController extends Controller
 
         // Calcular la duración total en minutos
         $totalMinutes = ($request->hours * 60) + $request->minutes;
-        $servicio->duration = $totalMinutes;  // Guardar la duración en minutos
+
+        // Convertir los minutos a una cadena de caracteres con formato HH:MM:SS
+        $formattedTime = date('H:i:s', mktime(0, $totalMinutes));
+
+        // Guardar la duración formateada en la base de datos
+        $servicio->duration = $formattedTime;
 
         $servicio->empresa_id = $empresa->id;
         $servicio->save();

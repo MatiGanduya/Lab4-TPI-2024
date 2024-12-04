@@ -41,13 +41,13 @@
                             <div id="map" style="width: 100%; height: 200px; background-color: #eaeaea;"></div>
                         </div>
 
-                        <input type="text" id="country" name="country" placeholder="País" required readonly
+                        <input type="text" id="country" name="country" placeholder="País" required
                             value="{{ isset($empresa) ? $empresa->location->country : '' }}">
-                        <input type="text" id="state" name="state" placeholder="Provincia/Estado" required readonly
+                        <input type="text" id="state" name="state" placeholder="Provincia/Estado" required
                             value="{{ isset($empresa) ? $empresa->location->province : '' }}">
-                        <input type="text" id="city" name="city" placeholder="Ciudad" required readonly
+                        <input type="text" id="city" name="city" placeholder="Ciudad" required
                             value="{{ isset($empresa) ? $empresa->location->city : '' }}">
-                        <input type="text" id="postalCode" name="postalCode" placeholder="Código Postal" required
+                        <input type="text" id="postalCode" name="postalCode" placeholder="Código Postal"
                             value="{{ isset($empresa) ? $empresa->location->postal_code : '' }}">
                         <input type="hidden" name="latitude" id="latitude" value="{{ isset($empresa) ? $empresa->location->latitude : '' }}">
                         <input type="hidden" name="longitude" id="longitude" value="{{ isset($empresa) ? $empresa->location->longitude : '' }}">
@@ -128,7 +128,7 @@
                                     <h5 class="card-title">{{ $servicio->name }}</h5>
                                     <p class="card-text">{{ $servicio->description }}</p>
                                     <div class="d-flex justify-content-between">
-                                        <span class="text-muted">Duración: {{ $servicio->duration }}</span>
+                                        <span class="text-muted">Duración: {{ date('H:i', strtotime($servicio->duration)) }}</span>
                                         <span class="text-success font-weight-bold">${{ $servicio->price }}</span>
                                     </div>
                                 </div>
